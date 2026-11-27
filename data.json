@@ -55,8 +55,23 @@
     }
   ],
   "offers": {
-    "enabled": false,
-    "items": []
+    "enabled": true,
+    "items": [
+      {
+        "title": "فيري ليمون – 1 لتر",
+        "price": "14.99 ريال بدل 17 ريال",
+        "note": "",
+        "until": "2026-12-31",
+        "image": "images/offer-1795792611341.jpg"
+      },
+      {
+        "title": "كلوركس 3.78 لتر",
+        "price": "17 ريال بدل 21 ريال",
+        "note": "",
+        "until": "2026-12-31",
+        "image": "images/offer-1795792816337.jpg"
+      }
+    ]
   },
   "photos": [
     {
