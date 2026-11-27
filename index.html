@@ -168,12 +168,36 @@
   .offer h3{font-size:1.2rem;font-weight:800;color:var(--sea-dark)}
   .offer .price{font-size:1.6rem;font-weight:800;color:var(--sun-dark)}
   .offer p{color:var(--muted);font-size:.95rem}
+  .langbar{background:var(--white);border-bottom:1px solid var(--sand-dark);padding:8px 8px;display:flex;align-items:center;justify-content:safe center;gap:4px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .langbar::-webkit-scrollbar{display:none}
+  .langbar .globe{font-size:1.1rem;margin-inline-end:1px;flex-shrink:0}
+  .langbar button{flex-shrink:0;white-space:nowrap;font-family:"Tajawal",sans-serif;font-size:.92rem;font-weight:700;min-height:38px;padding:4px 9px;border-radius:999px;border:2px solid var(--sea-soft);background:var(--white);color:var(--sea-dark);cursor:pointer;line-height:1.2}
+  .langbar button[aria-pressed=true]{background:var(--sea);border-color:var(--sea);color:var(--white)}
+  .langbar button:lang(bn){font-family:"Noto Sans Bengali","Tajawal",sans-serif}
+  .langbar button:lang(hi){font-family:"Noto Sans Devanagari","Tajawal",sans-serif}
+  html[lang=ur] body{font-family:"Noto Naskh Arabic","Tajawal",system-ui,sans-serif}
+  html[lang=bn] body{font-family:"Noto Sans Bengali","Tajawal",system-ui,sans-serif}
+  html[lang=hi] body{font-family:"Noto Sans Devanagari","Tajawal",system-ui,sans-serif}
+  html[lang=ur] input,html[lang=ur] select,html[lang=ur] textarea,html[lang=ur] button{font-family:"Noto Naskh Arabic","Tajawal",sans-serif}
+  html[lang=bn] input,html[lang=bn] select,html[lang=bn] textarea,html[lang=bn] .chip,html[lang=bn] .pay button,html[lang=bn] .btn{font-family:"Noto Sans Bengali","Tajawal",sans-serif}
+  html[lang=hi] input,html[lang=hi] select,html[lang=hi] textarea,html[lang=hi] .chip,html[lang=hi] .pay button,html[lang=hi] .btn{font-family:"Noto Sans Devanagari","Tajawal",sans-serif}
+  .news-item{border-right:0;border-inline-start:6px solid var(--sea)}
+  .brand-name{text-align:start}
+  .offer .old{display:block;color:var(--muted);text-decoration:line-through;font-size:1rem;font-weight:500}
 </style>
 </head>
 <body>
 
+<nav class="langbar" id="langbar" aria-label="Language / اللغة">
+  <span class="globe" aria-hidden="true">🌐</span>
+  <button type="button" data-lang="ar" lang="ar" aria-pressed="true">العربية</button>
+  <button type="button" data-lang="en" lang="en" aria-pressed="false">English</button>
+  <button type="button" data-lang="ur" lang="ur" aria-pressed="false">اردو</button>
+  <button type="button" data-lang="bn" lang="bn" aria-pressed="false">বাংলা</button>
+  <button type="button" data-lang="hi" lang="hi" aria-pressed="false">हिन्दी</button>
+</nav>
 <div id="announce" role="status"></div>
-<div id="closedBar" role="status">المحل مغلق الآن، اطلب وبنجهز طلبك أول ما نفتح</div>
+<div id="closedBar" role="status" data-i18n="closedBar">المحل مغلق الآن، اطلب وبنجهز طلبك أول ما نفتح</div>
 
 <!-- 1. الواجهة الرئيسية -->
 <header class="hero">
@@ -195,7 +219,7 @@
     <p class="brand-only-tag js-tagline"></p>
     <h1 id="heroTitle"></h1>
     <p class="lead" id="heroText"></p>
-    <a href="#order" class="btn btn-sun">اطلب الآن
+    <a href="#order" class="btn btn-sun"><span data-i18n="orderNow">اطلب الآن</span>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
     <div class="badges" id="badges"></div>
@@ -206,8 +230,8 @@
 <!-- 2. رسوم التوصيل -->
 <section class="sand" id="fees">
   <div class="wrap">
-    <h2>رسوم التوصيل</h2>
-    <p class="sub">واضحة وبدون مفاجآت</p>
+    <h2 data-i18n="feesTitle">رسوم التوصيل</h2>
+    <p class="sub" data-i18n="feesSub">واضحة وبدون مفاجآت</p>
     <div class="fees" id="feeCards"></div>
   </div>
 </section>
@@ -215,50 +239,50 @@
 <!-- 3. اطلب الآن -->
 <section id="order">
   <div class="wrap">
-    <h2>اطلب الآن</h2>
-    <p class="sub">عبّ البيانات واكتب أغراضك، وإحنا نتكفل بالباقي</p>
+    <h2 data-i18n="orderTitle">اطلب الآن</h2>
+    <p class="sub" data-i18n="orderSub">عبّ البيانات واكتب أغراضك، وإحنا نتكفل بالباقي</p>
     <form class="card" id="orderForm" novalidate onsubmit="return false">
       <div class="field">
-        <label class="lbl" for="name">الاسم <span class="opt">(اختياري)</span></label>
-        <input type="text" id="name" autocomplete="name" placeholder="مثلاً: أبو محمد">
+        <label class="lbl" for="name"><span data-i18n="name">الاسم</span> <span class="opt" data-i18n="optional">(اختياري)</span></label>
+        <input type="text" id="name" autocomplete="name" data-i18n-ph="namePh" placeholder="مثلاً: أبو محمد">
       </div>
 
       <div class="field">
-        <label class="lbl" for="area">الحي <span class="req">*</span></label>
+        <label class="lbl" for="area"><span data-i18n="area">الحي</span> <span class="req">*</span></label>
         <select id="area" aria-describedby="areaErr"></select>
-        <div class="err" id="areaErr">لو سمحت اختر الحي عشان نعرف وين نوصل</div>
+        <div class="err" id="areaErr" data-i18n="areaErr">لو سمحت اختر الحي عشان نعرف وين نوصل</div>
       </div>
 
       <div class="field">
-        <label class="lbl" for="address">وصف العنوان <span class="opt">(اختياري)</span></label>
-        <input type="text" id="address" autocomplete="street-address" placeholder="الشارع، أقرب معلم، لون الباب">
+        <label class="lbl" for="address"><span data-i18n="addr">وصف العنوان</span> <span class="opt" data-i18n="optional">(اختياري)</span></label>
+        <input type="text" id="address" autocomplete="street-address" data-i18n-ph="addrPh" placeholder="الشارع، أقرب معلم، لون الباب">
       </div>
 
       <div class="field">
-        <label class="lbl" for="items">وش تحتاج؟ <span class="req">*</span></label>
-        <textarea id="items" aria-describedby="itemsErr" placeholder="اكتب كل صنف في سطر، مثلاً:&#10;كيس رز 5 كيلو&#10;2 حليب طويل الأجل&#10;كرتون بيض"></textarea>
-        <div class="err" id="itemsErr">اكتب طلبك هنا، ولو صنف واحد</div>
-        <div class="chips" id="chips" aria-label="أصناف سريعة"></div>
-        <p class="chips-hint">اضغط على أي صنف يضاف لطلبك، وتقدر تكتب جنبه الكمية أو النوع</p>
+        <label class="lbl" for="items"><span data-i18n="items">وش تحتاج؟</span> <span class="req">*</span></label>
+        <textarea id="items" aria-describedby="itemsErr" data-i18n-ph="itemsPh"></textarea>
+        <div class="err" id="itemsErr" data-i18n="itemsErr">اكتب طلبك هنا، ولو صنف واحد</div>
+        <div class="chips" id="chips"></div>
+        <p class="chips-hint" data-i18n="chipsHint">اضغط على أي صنف يضاف لطلبك، وتقدر تكتب جنبه الكمية أو النوع</p>
       </div>
 
       <div class="field" id="payField">
-        <span class="lbl" id="payLbl">طريقة الدفع</span>
+        <span class="lbl" id="payLbl" data-i18n="pay">طريقة الدفع</span>
         <div class="pay" role="group" aria-labelledby="payLbl" id="pay"></div>
       </div>
 
       <div class="field">
-        <label class="lbl" for="notes">ملاحظات <span class="opt">(اختياري)</span></label>
-        <textarea id="notes" rows="2" placeholder="مثلاً: لا تدق الجرس، أو بديل إذا صنف مو موجود"></textarea>
+        <label class="lbl" for="notes"><span data-i18n="notes">ملاحظات</span> <span class="opt" data-i18n="optional">(اختياري)</span></label>
+        <textarea id="notes" rows="2" data-i18n-ph="notesPh" placeholder="مثلاً: لا تدق الجرس، أو بديل إذا صنف مو موجود"></textarea>
       </div>
 
       <div id="formError" role="alert"></div>
 
       <a id="sendBtn" class="btn btn-wa" href="https://wa.me/966505791265" rel="noopener">
         <svg width="28" height="28" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 3C8.8 3 3 8.7 3 15.8c0 2.5.7 4.9 2 7L3 29l6.4-2c2 1.1 4.3 1.7 6.6 1.7 7.2 0 13-5.7 13-12.9S23.2 3 16 3zm0 23.4c-2.1 0-4.1-.6-5.9-1.7l-.4-.2-3.8 1.2 1.2-3.7-.3-.4c-1.2-1.8-1.8-3.9-1.8-6 0-5.9 4.9-10.7 11-10.7s11 4.8 11 10.7-4.9 10.8-11 10.8zm6-8c-.3-.2-2-1-2.3-1.1-.3-.1-.5-.2-.8.2-.2.3-.9 1.1-1.1 1.3-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.7-1.7-1-.9-1.7-2-1.9-2.3-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.6.1-.2 0-.4 0-.6l-1.1-2.6c-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.4 1.4 3.6c.2.2 2.4 3.7 5.9 5.1.8.4 1.5.6 2 .7.8.3 1.6.2 2.2.1.7-.1 2-.8 2.3-1.6.3-.8.3-1.5.2-1.6-.1-.2-.4-.3-.7-.4z"/></svg>
-        أرسل الطلب على الواتساب
+        <span data-i18n="send">أرسل الطلب على الواتساب</span>
       </a>
-      <p class="after-note">بعد ما ترسل الطلب، أرسل لنا موقعك في نفس المحادثة (زر المشبك ← الموقع) عشان نوصلك بسرعة</p>
+      <p class="after-note" data-i18n="afterNote">بعد ما ترسل الطلب، أرسل لنا موقعك في نفس المحادثة (زر المشبك ← الموقع) عشان نوصلك بسرعة</p>
     </form>
   </div>
 </section>
@@ -266,14 +290,14 @@
 <!-- 4. المناطق -->
 <section class="sand" id="areas">
   <div class="wrap">
-    <h2>المناطق اللي نوصل لها</h2>
-    <p class="sub" id="areasSub"></p>
+    <h2 data-i18n="areasTitle">المناطق اللي نوصل لها</h2>
+    <p class="sub" data-i18n="areasSub">نوصل حالياً لهذي الأحياء</p>
     <div class="areas" id="areaCards"></div>
-    <p class="center muted" style="margin-bottom:18px">حيّك مو موجود؟ <a class="wa-link" id="askArea" href="#" rel="noopener">راسلنا على الواتساب</a> ونشوف إذا نقدر نوصل لك</p>
+    <p class="center muted" style="margin-bottom:18px"><span data-i18n="notListed">حيّك مو موجود؟</span> <a class="wa-link" id="askArea" href="#" rel="noopener" data-i18n="contactUs">راسلنا على الواتساب</a> <span data-i18n="weCheck">ونشوف إذا نقدر نوصل لك</span></p>
     <div class="center">
       <a class="btn btn-outline js-map" href="#" target="_blank" rel="noopener">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="10" r="2.6" stroke="currentColor" stroke-width="2.2"/></svg>
-        موقع البقالة على خرائط جوجل
+        <span data-i18n="mapBtn">موقع البقالة على خرائط جوجل</span>
       </a>
     </div>
   </div>
@@ -282,18 +306,18 @@
 <!-- 5. أوقات الدوام والعنوان -->
 <section id="hours">
   <div class="wrap">
-    <h2>أوقات الدوام والعنوان</h2>
-    <p class="sub">مرّنا أو اطلب من مكانك</p>
+    <h2 data-i18n="hoursTitle">أوقات الدوام والعنوان</h2>
+    <p class="sub" data-i18n="hoursSub">مرّنا أو اطلب من مكانك</p>
     <div class="hours-grid">
       <div class="card">
-        <table id="hoursTable" aria-label="أوقات الدوام"><tbody></tbody></table>
+        <table id="hoursTable"><tbody></tbody></table>
       </div>
       <div class="card addr">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink:0;margin-top:4px"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="#f2a541"/><circle cx="12" cy="10" r="2.6" fill="#fff"/></svg>
         <div>
-          <div class="lbl">العنوان</div>
+          <div class="lbl" data-i18n="addressLbl">العنوان</div>
           <p class="js-address"></p>
-          <p style="margin-top:10px"><a class="wa-link js-map" href="#" target="_blank" rel="noopener" style="color:var(--sea)">افتح الموقع على الخريطة ←</a></p>
+          <p style="margin-top:10px"><a class="wa-link js-map" href="#" target="_blank" rel="noopener" style="color:var(--sea)" data-i18n="openMap">افتح الموقع على الخريطة ←</a></p>
         </div>
       </div>
     </div>
@@ -303,7 +327,7 @@
 <!-- 6. العروض -->
 <section class="sand" id="offers">
   <div class="wrap">
-    <h2>العروض</h2>
+    <h2 data-i18n="offersTitle">العروض</h2>
     <div id="offersBox"></div>
   </div>
 </section>
@@ -311,8 +335,8 @@
 <!-- الأخبار -->
 <section id="news" style="display:none">
   <div class="wrap">
-    <h2>آخر الأخبار</h2>
-    <p class="sub">جديدنا في المحل</p>
+    <h2 data-i18n="newsTitle">آخر الأخبار</h2>
+    <p class="sub" data-i18n="newsSub">جديدنا في المحل</p>
     <div class="news" id="newsBox"></div>
   </div>
 </section>
@@ -320,20 +344,20 @@
 <!-- 7. تعرّف علينا -->
 <section id="about">
   <div class="wrap">
-    <h2>تعرّف علينا</h2>
-    <p class="sub">بقالة قريبة منك، وطلبك يوصلك بأسهل طريقة</p>
+    <h2 data-i18n="aboutTitle">تعرّف علينا</h2>
+    <p class="sub" data-i18n="aboutSub">بقالة قريبة منك، وطلبك يوصلك بأسهل طريقة</p>
     <div class="points">
       <div class="point">
         <div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2" stroke="#0b6e79" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20" r="1.6" fill="#0b6e79"/><circle cx="17" cy="20" r="1.6" fill="#0b6e79"/></svg></div>
-        <div><h3>كل أغراض البيت</h3><p>مواد غذائية، منظفات، مشروبات، وكل اللي يحتاجه بيتك</p></div>
+        <div><h3 data-i18n="p1t">كل أغراض البيت</h3><p data-i18n="p1d">مواد غذائية، منظفات، مشروبات، وكل اللي يحتاجه بيتك</p></div>
       </div>
       <div class="point">
         <div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5h16v11H9l-5 4V5z" stroke="#0b6e79" stroke-width="2.2" stroke-linejoin="round"/><path d="M8 9.5h8M8 12.5h5" stroke="#0b6e79" stroke-width="2.2" stroke-linecap="round"/></svg></div>
-        <div><h3>تطلب بالكلام</h3><p>اكتب أغراضك على راحتك كأنك تكلمنا، بدون تطبيق ولا تسجيل</p></div>
+        <div><h3 data-i18n="p2t">تطلب بالكلام</h3><p data-i18n="p2d">اكتب أغراضك على راحتك كأنك تكلمنا، بدون تطبيق ولا تسجيل</p></div>
       </div>
       <div class="point">
         <div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-9z" stroke="#0b6e79" stroke-width="2.2" stroke-linejoin="round"/></svg></div>
-        <div><h3>توصيل لباب البيت</h3><p id="aboutDelivery"></p></div>
+        <div><h3 data-i18n="p3t">توصيل لباب البيت</h3><p id="aboutDelivery"></p></div>
       </div>
     </div>
     <div class="photos" id="photos"></div>
@@ -347,9 +371,9 @@
     <div class="fname js-name"></div>
     <p class="js-tagline"></p>
     <a class="phone" id="footerPhone" href="#" rel="noopener"></a>
-    <p>واتساب الطلبات</p>
+    <p data-i18n="footerWa">واتساب الطلبات</p>
     <p style="margin-top:10px" class="js-address"></p>
-    <p style="margin-top:10px"><a class="maplink js-map" href="#" target="_blank" rel="noopener">موقعنا على الخريطة</a></p>
+    <p style="margin-top:10px"><a class="maplink js-map" href="#" target="_blank" rel="noopener" data-i18n="footerMap">موقعنا على الخريطة</a></p>
   </div>
 </footer>
 
@@ -358,13 +382,246 @@
   "use strict";
 
   /* البيانات الافتراضية. المحتوى الفعلي يُقرأ من data.json (يتعدّل من لوحة التحكم admin.html) */
-  var DEFAULTS = {"storeName": "ابتسامة الشاطئ", "logo": "images/logo.webp", "tagline": "بقالة حيّك في صبيا", "heroTitle": "اكتب طلبك، ونوصله لباب بيتك", "heroText": "بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة", "announcement": "", "whatsapp": "966505791265", "address": "حي الحشيبرية، صبيا", "mapsUrl": "https://maps.app.goo.gl/xUge2H9bAkNqRFKF7", "areas": ["الحشيبرية", "الجمالة"], "freeDeliveryMin": 50, "deliveryFee": 5.75, "payments": ["تحويل بنكي", "شبكة عند الاستلام", "كاش عند الاستلام"], "quickItems": ["رز", "دجاج", "زيت", "سكر", "حليب", "بيض", "خبز", "ماء", "شاي", "مناديل"], "hours": [{"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}], "offers": {"enabled": false, "items": []}, "photos": [{"src": "images/front.jpg", "label": "واجهة المحل"}, {"src": "images/inside.jpg", "label": "من داخل المحل"}, {"src": "images/order.jpg", "label": "طلب مجهّز"}], "news": []};
+  var DEFAULTS = {"storeName": "ابتسامة الشاطئ", "logo": "images/logo.webp", "tagline": "بقالة حيّك في صبيا", "heroTitle": "اكتب طلبك، ونوصله لباب بيتك", "heroText": "بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة", "announcement": "", "whatsapp": "966505791265", "address": "حي الحشيبرية، صبيا", "mapsUrl": "https://maps.app.goo.gl/xUge2H9bAkNqRFKF7", "areas": ["الحشيبرية", "الجمالة"], "freeDeliveryMin": 50, "deliveryFee": 5, "payments": ["تحويل بنكي", "شبكة عند الاستلام", "كاش عند الاستلام"], "quickItems": ["رز", "دجاج", "زيت", "سكر", "حليب", "بيض", "خبز", "ماء", "شاي", "مناديل"], "hours": [{"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}], "offers": {"enabled": true, "items": [{"title": "فيري ليمون – 1 لتر", "price": "14.99 ريال بدل 17 ريال", "note": "", "until": "2026-12-31", "image": "images/offer-1795792611341.jpg", "tr": {"en": "Fairy Lemon – 1 L", "ur": "فیری لیمن – 1 لیٹر", "bn": "ফেয়ারি লেমন – 1 লিটার", "hi": "फेयरी लेमन – 1 लीटर"}}, {"title": "كلوركس 3.78 لتر", "price": "17 ريال بدل 21 ريال", "note": "", "until": "2026-12-31", "image": "images/offer-1795792816337.jpg", "tr": {"en": "Clorox 3.78 L", "ur": "کلوروکس 3.78 لیٹر", "bn": "ক্লোরক্স 3.78 লিটার", "hi": "क्लोरॉक्स 3.78 लीटर"}}]}, "photos": [{"src": "images/front.jpg", "label": "واجهة المحل"}, {"src": "images/inside.jpg", "label": "من داخل المحل"}, {"src": "images/order.jpg", "label": "طلب مجهّز"}], "news": []};
   var D = DEFAULTS;
 
-  var DAYS = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+  /* ===== الترجمات ===== */
+  var LANGS = ["ar","en","ur","bn","hi"];
+  var RTL = {ar: true, ur: true};
+  var FONTS = {
+    ur: "https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;700&display=swap",
+    bn: "https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700;800&display=swap",
+    hi: "https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700;800&display=swap"
+  };
+
+  var T = {
+    ar: {
+      orderNow:"اطلب الآن", badgeFree:"🚚 توصيل مجاني فوق {n} ريال", badgeFreeAlways:"🚚 توصيل مجاني",
+      badge24:"مفتوحين 24 ساعة", today:"اليوم: {x}", todayClosed:"اليوم: مغلق",
+      feesTitle:"رسوم التوصيل", feesSub:"واضحة وبدون مفاجآت", free:"مجاناً",
+      freeIf:"إذا طلبك {n} ريال أو أكثر", feeIf:"إذا طلبك أقل من {n} ريال",
+      freeAll:"التوصيل مجاني على كل الطلبات", feeAll:"رسوم التوصيل لكل طلب", sar:"ر.س",
+      orderTitle:"اطلب الآن", orderSub:"عبّ البيانات واكتب أغراضك، وإحنا نتكفل بالباقي",
+      name:"الاسم", optional:"(اختياري)", namePh:"مثلاً: أبو محمد",
+      area:"الحي", chooseArea:"اختر حيّك", areaErr:"لو سمحت اختر الحي عشان نعرف وين نوصل",
+      addr:"وصف العنوان", addrPh:"الشارع، أقرب معلم، لون الباب",
+      items:"وش تحتاج؟", itemsPh:"اكتب كل صنف في سطر، مثلاً:\nكيس رز 5 كيلو\n2 حليب طويل الأجل\nكرتون بيض",
+      itemsErr:"اكتب طلبك هنا، ولو صنف واحد", chipsHint:"اضغط على أي صنف يضاف لطلبك، وتقدر تكتب جنبه الكمية أو النوع",
+      pay:"طريقة الدفع", notes:"ملاحظات", notesPh:"مثلاً: لا تدق الجرس، أو بديل إذا صنف مو موجود",
+      formErr:"باقي شي بسيط قبل الإرسال: {x}", errArea:"اختر الحي", errItems:"اكتب طلبك", and:" و ",
+      send:"أرسل الطلب على الواتساب",
+      afterNote:"بعد ما ترسل الطلب، أرسل لنا موقعك في نفس المحادثة (زر المشبك ← الموقع) عشان نوصلك بسرعة",
+      areasTitle:"المناطق اللي نوصل لها", areasSub:"نوصل حالياً لهذي الأحياء",
+      notListed:"حيّك مو موجود؟", contactUs:"راسلنا على الواتساب", weCheck:"ونشوف إذا نقدر نوصل لك",
+      askAreaMsg:"السلام عليكم، هل توصلون لحيّي؟", mapBtn:"موقع البقالة على خرائط جوجل",
+      hoursTitle:"أوقات الدوام والعنوان", hoursSub:"مرّنا أو اطلب من مكانك", todayTag:"(اليوم)",
+      closed:"مغلق", h24:"24 ساعة", addressLbl:"العنوان", openMap:"افتح الموقع على الخريطة ←",
+      offersTitle:"العروض", soonTitle:"عروض الأسبوع قريباً", soonText:"ترقبونا، بننزل عروض حلوة على أغراض البيت",
+      ends:"ينتهي {d}", newsTitle:"آخر الأخبار", newsSub:"جديدنا في المحل",
+      aboutTitle:"تعرّف علينا", aboutSub:"بقالة قريبة منك، وطلبك يوصلك بأسهل طريقة",
+      p1t:"كل أغراض البيت", p1d:"مواد غذائية، منظفات، مشروبات، وكل اللي يحتاجه بيتك",
+      p2t:"تطلب بالكلام", p2d:"اكتب أغراضك على راحتك كأنك تكلمنا، بدون تطبيق ولا تسجيل",
+      p3t:"توصيل لباب البيت", p3d:"نجهز طلبك ونوصله لين عندك في {areas}",
+      footerWa:"واتساب الطلبات", footerMap:"موقعنا على الخريطة",
+      closedBar:"المحل مغلق الآن، اطلب وبنجهز طلبك أول ما نفتح",
+      am:"ص", pm:"م", midnight:"منتصف الليل",
+      days:["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"],
+      months:["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"]
+    },
+    en: {
+      orderNow:"Order now", badgeFree:"🚚 Free delivery over {n} SAR", badgeFreeAlways:"🚚 Free delivery",
+      badge24:"Open 24 hours", today:"Today: {x}", todayClosed:"Today: closed",
+      feesTitle:"Delivery fees", feesSub:"Clear, no surprises", free:"Free",
+      freeIf:"If your order is {n} SAR or more", feeIf:"If your order is under {n} SAR",
+      freeAll:"Free delivery on all orders", feeAll:"Delivery fee per order", sar:"SAR",
+      orderTitle:"Order now", orderSub:"Fill in your details and write your list, we'll take care of the rest",
+      name:"Name", optional:"(optional)", namePh:"e.g. Ahmed",
+      area:"Neighborhood", chooseArea:"Choose your neighborhood", areaErr:"Please choose your neighborhood so we know where to deliver",
+      addr:"Address details", addrPh:"Street, nearest landmark, door color",
+      items:"What do you need?", itemsPh:"Write each item on a new line, e.g.:\nRice 5 kg\n2 long-life milk\nTray of eggs",
+      itemsErr:"Write your order here, even just one item", chipsHint:"Tap any item to add it to your order, then add the quantity or type next to it",
+      pay:"Payment method", notes:"Notes", notesPh:"e.g. Don't ring the bell, or a substitute if an item is missing",
+      formErr:"Almost there, before sending: {x}", errArea:"choose your neighborhood", errItems:"write your order", and:" and ",
+      send:"Send order on WhatsApp",
+      afterNote:"After sending your order, share your location in the same chat (📎 → Location) so we can reach you quickly",
+      areasTitle:"Where we deliver", areasSub:"We currently deliver to these neighborhoods",
+      notListed:"Your neighborhood isn't listed?", contactUs:"Message us on WhatsApp", weCheck:"and we'll see if we can deliver to you",
+      askAreaMsg:"Hello, do you deliver to my neighborhood?", mapBtn:"Store location on Google Maps",
+      hoursTitle:"Opening hours & address", hoursSub:"Visit us or order from home", todayTag:"(today)",
+      closed:"Closed", h24:"24 hours", addressLbl:"Address", openMap:"Open location on the map →",
+      offersTitle:"Offers", soonTitle:"This week's offers are coming soon", soonText:"Stay tuned for great deals on household items",
+      ends:"Ends {d}", newsTitle:"Latest news", newsSub:"What's new at the store",
+      aboutTitle:"About us", aboutSub:"A grocery close to you, and the easiest way to get your order",
+      p1t:"Everything for your home", p1d:"Groceries, cleaning supplies, drinks, and everything your home needs",
+      p2t:"Order in your own words", p2d:"Write your list freely like you're talking to us, no app and no sign-up",
+      p3t:"Delivery to your door", p3d:"We prepare your order and deliver it to you in {areas}",
+      footerWa:"WhatsApp orders", footerMap:"Our location on the map",
+      closedBar:"The store is closed now. Order anyway and we'll prepare it as soon as we open",
+      am:"AM", pm:"PM", midnight:"midnight",
+      days:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+      months:["January","February","March","April","May","June","July","August","September","October","November","December"]
+    },
+    ur: {
+      orderNow:"ابھی آرڈر کریں", badgeFree:"🚚 {n} ریال سے زیادہ پر مفت ڈیلیوری", badgeFreeAlways:"🚚 مفت ڈیلیوری",
+      badge24:"24 گھنٹے کھلا ہے", today:"آج: {x}", todayClosed:"آج: بند",
+      feesTitle:"ڈیلیوری چارجز", feesSub:"واضح، کوئی چھپی فیس نہیں", free:"مفت",
+      freeIf:"اگر آپ کا آرڈر {n} ریال یا اس سے زیادہ ہو", feeIf:"اگر آپ کا آرڈر {n} ریال سے کم ہو",
+      freeAll:"تمام آرڈرز پر مفت ڈیلیوری", feeAll:"ہر آرڈر پر ڈیلیوری چارج", sar:"ریال",
+      orderTitle:"ابھی آرڈر کریں", orderSub:"معلومات بھریں اور اپنا سامان لکھیں، باقی کام ہمارا",
+      name:"نام", optional:"(اختیاری)", namePh:"مثلاً: احمد",
+      area:"محلہ", chooseArea:"اپنا محلہ منتخب کریں", areaErr:"براہ کرم محلہ منتخب کریں تاکہ ہمیں پتا ہو کہاں پہنچانا ہے",
+      addr:"پتے کی تفصیل", addrPh:"گلی، قریبی نشانی، دروازے کا رنگ",
+      items:"آپ کو کیا چاہیے؟", itemsPh:"ہر چیز الگ لائن میں لکھیں، مثلاً:\nچاول 5 کلو\n2 دودھ\nانڈوں کی ٹرے",
+      itemsErr:"اپنا آرڈر یہاں لکھیں، چاہے ایک ہی چیز ہو", chipsHint:"کسی بھی چیز پر ٹیپ کریں تو وہ آرڈر میں شامل ہو جائے گی، ساتھ میں مقدار یا قسم لکھ سکتے ہیں",
+      pay:"ادائیگی کا طریقہ", notes:"نوٹ", notesPh:"مثلاً: گھنٹی نہ بجائیں، یا کوئی چیز نہ ہو تو متبادل",
+      formErr:"بھیجنے سے پہلے تھوڑا سا باقی ہے: {x}", errArea:"محلہ منتخب کریں", errItems:"اپنا آرڈر لکھیں", and:" اور ",
+      send:"آرڈر واٹس ایپ پر بھیجیں",
+      afterNote:"آرڈر بھیجنے کے بعد اسی چیٹ میں اپنی لوکیشن بھیجیں (📎 ← لوکیشن) تاکہ ہم جلدی پہنچ سکیں",
+      areasTitle:"جن علاقوں میں ہم ڈیلیوری کرتے ہیں", areasSub:"فی الحال ہم ان محلوں میں ڈیلیوری کرتے ہیں",
+      notListed:"آپ کا محلہ فہرست میں نہیں؟", contactUs:"واٹس ایپ پر رابطہ کریں", weCheck:"ہم دیکھیں گے کہ کیا ہم آپ تک پہنچا سکتے ہیں",
+      askAreaMsg:"السلام علیکم، کیا آپ میرے محلے میں ڈیلیوری کرتے ہیں؟", mapBtn:"گوگل میپس پر دکان کی لوکیشن",
+      hoursTitle:"اوقاتِ کار اور پتا", hoursSub:"دکان پر آئیں یا گھر بیٹھے آرڈر کریں", todayTag:"(آج)",
+      closed:"بند", h24:"24 گھنٹے", addressLbl:"پتا", openMap:"نقشے پر لوکیشن کھولیں ←",
+      offersTitle:"آفرز", soonTitle:"اس ہفتے کی آفرز جلد آ رہی ہیں", soonText:"ہمارے ساتھ رہیں، گھر کی چیزوں پر زبردست آفرز آنے والی ہیں",
+      ends:"آخری تاریخ: {d}", newsTitle:"تازہ خبریں", newsSub:"دکان کی نئی خبریں",
+      aboutTitle:"ہمارے بارے میں", aboutSub:"آپ کے قریب کی گروسری، اور آرڈر آپ تک آسان ترین طریقے سے",
+      p1t:"گھر کی ہر چیز", p1d:"کھانے پینے کی اشیاء، صفائی کا سامان، مشروبات، اور گھر کی ہر ضرورت",
+      p2t:"اپنے الفاظ میں آرڈر کریں", p2d:"اپنا سامان آرام سے ایسے لکھیں جیسے ہم سے بات کر رہے ہوں، بغیر ایپ یا رجسٹریشن کے",
+      p3t:"گھر کے دروازے تک ڈیلیوری", p3d:"ہم آپ کا آرڈر تیار کر کے {areas} میں آپ تک پہنچاتے ہیں",
+      footerWa:"واٹس ایپ آرڈرز", footerMap:"نقشے پر ہماری لوکیشن",
+      closedBar:"دکان ابھی بند ہے، آرڈر کریں اور ہم کھلتے ہی تیار کر دیں گے",
+      am:"صبح", pm:"شام", midnight:"آدھی رات",
+      days:["اتوار","پیر","منگل","بدھ","جمعرات","جمعہ","ہفتہ"],
+      months:["جنوری","فروری","مارچ","اپریل","مئی","جون","جولائی","اگست","ستمبر","اکتوبر","نومبر","دسمبر"]
+    },
+    bn: {
+      orderNow:"এখনই অর্ডার করুন", badgeFree:"🚚 {n} রিয়ালের বেশি হলে ফ্রি ডেলিভারি", badgeFreeAlways:"🚚 ফ্রি ডেলিভারি",
+      badge24:"24 ঘণ্টা খোলা", today:"আজ: {x}", todayClosed:"আজ: বন্ধ",
+      feesTitle:"ডেলিভারি চার্জ", feesSub:"পরিষ্কার, কোনো লুকানো খরচ নেই", free:"ফ্রি",
+      freeIf:"আপনার অর্ডার {n} রিয়াল বা তার বেশি হলে", feeIf:"আপনার অর্ডার {n} রিয়ালের কম হলে",
+      freeAll:"সব অর্ডারে ফ্রি ডেলিভারি", feeAll:"প্রতিটি অর্ডারে ডেলিভারি চার্জ", sar:"রিয়াল",
+      orderTitle:"এখনই অর্ডার করুন", orderSub:"তথ্য দিন আর আপনার জিনিসের তালিকা লিখুন, বাকিটা আমাদের দায়িত্ব",
+      name:"নাম", optional:"(ঐচ্ছিক)", namePh:"যেমন: রহিম",
+      area:"এলাকা", chooseArea:"আপনার এলাকা বেছে নিন", areaErr:"অনুগ্রহ করে এলাকা বেছে নিন, যাতে আমরা জানি কোথায় পৌঁছাতে হবে",
+      addr:"ঠিকানার বিবরণ", addrPh:"রাস্তা, কাছের চিহ্ন, দরজার রং",
+      items:"আপনার কী লাগবে?", itemsPh:"প্রতিটি জিনিস আলাদা লাইনে লিখুন, যেমন:\nচাল 5 কেজি\n2 দুধ\nএক ট্রে ডিম",
+      itemsErr:"এখানে আপনার অর্ডার লিখুন, একটা জিনিস হলেও", chipsHint:"যেকোনো জিনিসে চাপ দিলে সেটা অর্ডারে যোগ হবে, পাশে পরিমাণ বা ধরন লিখতে পারেন",
+      pay:"পেমেন্টের পদ্ধতি", notes:"নোট", notesPh:"যেমন: বেল বাজাবেন না, বা কোনো জিনিস না থাকলে বিকল্প",
+      formErr:"পাঠানোর আগে একটু বাকি: {x}", errArea:"এলাকা বেছে নিন", errItems:"আপনার অর্ডার লিখুন", and:" আর ",
+      send:"হোয়াটসঅ্যাপে অর্ডার পাঠান",
+      afterNote:"অর্ডার পাঠানোর পর একই চ্যাটে আপনার লোকেশন পাঠান (📎 → লোকেশন), যাতে আমরা দ্রুত পৌঁছাতে পারি",
+      areasTitle:"যেসব এলাকায় আমরা ডেলিভারি দিই", areasSub:"এখন আমরা এই এলাকাগুলোতে ডেলিভারি দিই",
+      notListed:"আপনার এলাকা তালিকায় নেই?", contactUs:"হোয়াটসঅ্যাপে যোগাযোগ করুন", weCheck:"আমরা দেখব আপনার কাছে পৌঁছাতে পারি কিনা",
+      askAreaMsg:"আসসালামু আলাইকুম, আপনারা কি আমার এলাকায় ডেলিভারি দেন?", mapBtn:"গুগল ম্যাপে দোকানের লোকেশন",
+      hoursTitle:"খোলার সময় ও ঠিকানা", hoursSub:"দোকানে আসুন বা ঘরে বসে অর্ডার করুন", todayTag:"(আজ)",
+      closed:"বন্ধ", h24:"24 ঘণ্টা", addressLbl:"ঠিকানা", openMap:"ম্যাপে লোকেশন খুলুন →",
+      offersTitle:"অফার", soonTitle:"এই সপ্তাহের অফার শীঘ্রই আসছে", soonText:"সাথে থাকুন, ঘরের জিনিসে দারুণ অফার আসছে",
+      ends:"{d} পর্যন্ত", newsTitle:"সর্বশেষ খবর", newsSub:"দোকানের নতুন খবর",
+      aboutTitle:"আমাদের সম্পর্কে", aboutSub:"আপনার কাছের মুদি দোকান, অর্ডার পৌঁছায় সবচেয়ে সহজ উপায়ে",
+      p1t:"ঘরের সব জিনিস", p1d:"খাবার, পরিষ্কারের জিনিস, পানীয়, আর ঘরের সব দরকারি জিনিস",
+      p2t:"নিজের ভাষায় অর্ডার", p2d:"কোনো অ্যাপ বা রেজিস্ট্রেশন ছাড়াই, আমাদের সাথে কথা বলার মতো করে আরামে জিনিস লিখুন",
+      p3t:"দরজায় ডেলিভারি", p3d:"আমরা আপনার অর্ডার তৈরি করে {areas} এলাকায় আপনার কাছে পৌঁছে দিই",
+      footerWa:"হোয়াটসঅ্যাপে অর্ডার", footerMap:"ম্যাপে আমাদের লোকেশন",
+      closedBar:"দোকান এখন বন্ধ, অর্ডার করুন, খোলার সাথে সাথে আমরা তৈরি করে দেব",
+      am:"AM", pm:"PM", midnight:"মধ্যরাত",
+      days:["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"],
+      months:["জানুয়ারি","ফেব্রুয়ারি","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর"]
+    },
+    hi: {
+      orderNow:"अभी ऑर्डर करें", badgeFree:"🚚 {n} रियाल से ऊपर मुफ़्त डिलीवरी", badgeFreeAlways:"🚚 मुफ़्त डिलीवरी",
+      badge24:"24 घंटे खुला", today:"आज: {x}", todayClosed:"आज: बंद",
+      feesTitle:"डिलीवरी शुल्क", feesSub:"साफ़-साफ़, कोई छुपा शुल्क नहीं", free:"मुफ़्त",
+      freeIf:"अगर आपका ऑर्डर {n} रियाल या उससे ज़्यादा है", feeIf:"अगर आपका ऑर्डर {n} रियाल से कम है",
+      freeAll:"सभी ऑर्डर पर मुफ़्त डिलीवरी", feeAll:"हर ऑर्डर पर डिलीवरी शुल्क", sar:"रियाल",
+      orderTitle:"अभी ऑर्डर करें", orderSub:"जानकारी भरें और अपना सामान लिखें, बाकी हम पर छोड़ दें",
+      name:"नाम", optional:"(वैकल्पिक)", namePh:"जैसे: राजेश",
+      area:"मोहल्ला", chooseArea:"अपना मोहल्ला चुनें", areaErr:"कृपया मोहल्ला चुनें ताकि हमें पता हो कहाँ पहुँचाना है",
+      addr:"पते का विवरण", addrPh:"गली, पास की पहचान, दरवाज़े का रंग",
+      items:"आपको क्या चाहिए?", itemsPh:"हर सामान अलग लाइन में लिखें, जैसे:\nचावल 5 किलो\n2 दूध\nअंडों की ट्रे",
+      itemsErr:"अपना ऑर्डर यहाँ लिखें, चाहे एक ही सामान हो", chipsHint:"किसी भी सामान पर टैप करें, वह ऑर्डर में जुड़ जाएगा, साथ में मात्रा या प्रकार लिख सकते हैं",
+      pay:"भुगतान का तरीका", notes:"नोट", notesPh:"जैसे: घंटी न बजाएँ, या कोई सामान न हो तो विकल्प",
+      formErr:"भेजने से पहले थोड़ा बाकी है: {x}", errArea:"मोहल्ला चुनें", errItems:"अपना ऑर्डर लिखें", and:" और ",
+      send:"ऑर्डर व्हाट्सऐप पर भेजें",
+      afterNote:"ऑर्डर भेजने के बाद इसी चैट में अपनी लोकेशन भेजें (📎 → लोकेशन) ताकि हम जल्दी पहुँच सकें",
+      areasTitle:"जहाँ हम डिलीवरी करते हैं", areasSub:"अभी हम इन मोहल्लों में डिलीवरी करते हैं",
+      notListed:"आपका मोहल्ला सूची में नहीं है?", contactUs:"व्हाट्सऐप पर संपर्क करें", weCheck:"हम देखेंगे कि क्या हम आप तक पहुँचा सकते हैं",
+      askAreaMsg:"नमस्ते, क्या आप मेरे मोहल्ले में डिलीवरी करते हैं?", mapBtn:"गूगल मैप्स पर दुकान की लोकेशन",
+      hoursTitle:"खुलने का समय और पता", hoursSub:"दुकान पर आएँ या घर बैठे ऑर्डर करें", todayTag:"(आज)",
+      closed:"बंद", h24:"24 घंटे", addressLbl:"पता", openMap:"नक्शे पर लोकेशन खोलें →",
+      offersTitle:"ऑफ़र", soonTitle:"इस हफ़्ते के ऑफ़र जल्द आ रहे हैं", soonText:"जुड़े रहें, घर के सामान पर बढ़िया ऑफ़र आने वाले हैं",
+      ends:"{d} तक", newsTitle:"ताज़ा ख़बरें", newsSub:"दुकान की नई ख़बरें",
+      aboutTitle:"हमारे बारे में", aboutSub:"आपके पास की किराना दुकान, और ऑर्डर आप तक सबसे आसान तरीक़े से",
+      p1t:"घर का हर सामान", p1d:"खाने-पीने का सामान, सफ़ाई का सामान, पेय, और घर की हर ज़रूरत",
+      p2t:"अपने शब्दों में ऑर्डर करें", p2d:"अपना सामान आराम से ऐसे लिखें जैसे हमसे बात कर रहे हों, बिना ऐप या रजिस्ट्रेशन के",
+      p3t:"घर के दरवाज़े तक डिलीवरी", p3d:"हम आपका ऑर्डर तैयार करके {areas} में आप तक पहुँचाते हैं",
+      footerWa:"व्हाट्सऐप ऑर्डर", footerMap:"नक्शे पर हमारी लोकेशन",
+      closedBar:"दुकान अभी बंद है, ऑर्डर करें और हम खुलते ही तैयार कर देंगे",
+      am:"AM", pm:"PM", midnight:"आधी रात",
+      days:["रविवार","सोमवार","मंगलवार","बुधवार","गुरुवार","शुक्रवार","शनिवार"],
+      months:["जनवरी","फ़रवरी","मार्च","अप्रैल","मई","जून","जुलाई","अगस्त","सितंबर","अक्टूबर","नवंबर","दिसंबर"]
+    }
+  };
+
+  /* ترجمة البيانات الثابتة (النص العربي ← اللغة). أي نص جديد من لوحة التحكم بدون ترجمة يظهر بالعربي */
+  var V = {
+    en: {
+      "ابتسامة الشاطئ":"Ibtisamat Al-Shatee", "بقالة حيّك في صبيا":"Your neighborhood grocery in Sabya",
+      "اكتب طلبك، ونوصله لباب بيتك":"Write your order, we'll deliver it to your door",
+      "بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة":"No app, no sign-up. Write what you need like you're talking to us, and your order reaches us directly on WhatsApp",
+      "الحشيبرية":"Al-Hushaybiriyah", "الجمالة":"Al-Jamalah", "حي الحشيبرية، صبيا":"Al-Hushaybiriyah, Sabya",
+      "تحويل بنكي":"Bank transfer", "شبكة عند الاستلام":"Card on delivery", "كاش عند الاستلام":"Cash on delivery",
+      "short:تحويل بنكي":"Transfer", "short:شبكة عند الاستلام":"Card", "short:كاش عند الاستلام":"Cash",
+      "رز":"Rice", "دجاج":"Chicken", "زيت":"Oil", "سكر":"Sugar", "حليب":"Milk", "بيض":"Eggs", "خبز":"Bread", "ماء":"Water", "شاي":"Tea", "مناديل":"Tissues",
+      "واجهة المحل":"Store front", "من داخل المحل":"Inside the store", "طلب مجهّز":"A ready order", "خضار وفواكه طازجة":"Fresh fruits and vegetables"
+    },
+    ur: {
+      "ابتسامة الشاطئ":"ابتسامۃ الشاطئ", "بقالة حيّك في صبيا":"صبیا میں آپ کے محلے کی گروسری",
+      "اكتب طلبك، ونوصله لباب بيتك":"اپنا آرڈر لکھیں، ہم آپ کے دروازے تک پہنچائیں گے",
+      "بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة":"نہ کوئی ایپ، نہ رجسٹریشن۔ اپنی ضرورت کی چیزیں ایسے لکھیں جیسے ہم سے بات کر رہے ہوں، آرڈر سیدھا واٹس ایپ پر ہم تک پہنچ جائے گا",
+      "الحشيبرية":"الحشیبریہ", "الجمالة":"الجمالہ", "حي الحشيبرية، صبيا":"محلہ الحشیبریہ، صبیا",
+      "تحويل بنكي":"بینک ٹرانسفر", "شبكة عند الاستلام":"ڈیلیوری پر کارڈ", "كاش عند الاستلام":"ڈیلیوری پر نقد",
+      "short:تحويل بنكي":"ٹرانسفر", "short:شبكة عند الاستلام":"کارڈ", "short:كاش عند الاستلام":"نقد",
+      "رز":"چاول", "دجاج":"مرغی", "زيت":"تیل", "سكر":"چینی", "حليب":"دودھ", "بيض":"انڈے", "خبز":"روٹی", "ماء":"پانی", "شاي":"چائے", "مناديل":"ٹشو",
+      "واجهة المحل":"دکان کا سامنے کا حصہ", "من داخل المحل":"دکان کے اندر", "طلب مجهّز":"تیار آرڈر", "خضار وفواكه طازجة":"تازہ پھل اور سبزیاں"
+    },
+    bn: {
+      "ابتسامة الشاطئ":"ইবতিসামাত আল-শাতি", "بقالة حيّك في صبيا":"সাবিয়ায় আপনার পাড়ার মুদি দোকান",
+      "اكتب طلبك، ونوصله لباب بيتك":"অর্ডার লিখুন, আমরা আপনার দরজায় পৌঁছে দেব",
+      "بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة":"কোনো অ্যাপ নেই, কোনো রেজিস্ট্রেশন নেই। আমাদের সাথে কথা বলার মতো করে দরকারি জিনিস লিখুন, অর্ডার সরাসরি হোয়াটসঅ্যাপে আমাদের কাছে পৌঁছে যাবে",
+      "الحشيبرية":"আল-হুশাইবিরিয়া", "الجمالة":"আল-জামালা", "حي الحشيبرية، صبيا":"আল-হুশাইবিরিয়া, সাবিয়া",
+      "تحويل بنكي":"ব্যাংক ট্রান্সফার", "شبكة عند الاستلام":"ডেলিভারিতে কার্ড", "كاش عند الاستلام":"ডেলিভারিতে নগদ",
+      "short:تحويل بنكي":"ট্রান্সফার", "short:شبكة عند الاستلام":"কার্ড", "short:كاش عند الاستلام":"নগদ",
+      "رز":"চাল", "دجاج":"মুরগি", "زيت":"তেল", "سكر":"চিনি", "حليب":"দুধ", "بيض":"ডিম", "خبز":"রুটি", "ماء":"পানি", "شاي":"চা", "مناديل":"টিস্যু",
+      "واجهة المحل":"দোকানের সামনের দিক", "من داخل المحل":"দোকানের ভিতরে", "طلب مجهّز":"প্রস্তুত অর্ডার", "خضار وفواكه طازجة":"তাজা ফল ও সবজি"
+    },
+    hi: {
+      "ابتسامة الشاطئ":"इब्तिसामत अल-शाती", "بقالة حيّك في صبيا":"सबिया में आपके मोहल्ले की किराना दुकान",
+      "اكتب طلبك، ونوصله لباب بيتك":"अपना ऑर्डर लिखें, हम आपके दरवाज़े तक पहुँचाएँगे",
+      "بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة":"न कोई ऐप, न रजिस्ट्रेशन। अपनी ज़रूरत का सामान ऐसे लिखें जैसे हमसे बात कर रहे हों, और ऑर्डर सीधे व्हाट्सऐप पर हम तक पहुँच जाएगा",
+      "الحشيبرية":"अल-हुशैबिरिया", "الجمالة":"अल-जमाला", "حي الحشيبرية، صبيا":"अल-हुशैबिरिया, सबिया",
+      "تحويل بنكي":"बैंक ट्रांसफ़र", "شبكة عند الاستلام":"डिलीवरी पर कार्ड", "كاش عند الاستلام":"डिलीवरी पर नकद",
+      "short:تحويل بنكي":"ट्रांसफ़र", "short:شبكة عند الاستلام":"कार्ड", "short:كاش عند الاستلام":"नकद",
+      "رز":"चावल", "دجاج":"चिकन", "زيت":"तेल", "سكر":"चीनी", "حليب":"दूध", "بيض":"अंडे", "خبز":"ब्रेड", "ماء":"पानी", "شاي":"चाय", "مناديل":"टिशू",
+      "واجهة المحل":"दुकान का सामने का हिस्सा", "من داخل المحل":"दुकान के अंदर", "طلب مجهّز":"तैयार ऑर्डर", "خضار وفواكه طازجة":"ताज़े फल और सब्ज़ियाँ"
+    }
+  };
+
+
+  var LANG_NAMES = {ar:"العربية", en:"English", ur:"اردو", bn:"বাংলা", hi:"हिन्दी"};
+  var lang = "ar";
   var ORDER = [6,0,1,2,3,4,5];
   var $ = function(id){ return document.getElementById(id); };
   var all = function(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); };
+
+  function t(key, vars){
+    var s = (T[lang] && T[lang][key] != null) ? T[lang][key] : T.ar[key];
+    if (vars) Object.keys(vars).forEach(function(k){ s = s.split("{" + k + "}").join(vars[k]); });
+    return s;
+  }
+  // يترجم قيمة من البيانات إذا لها ترجمة، وإلا يرجعها بالعربي
+  function tv(v){ return lang === "ar" ? v : ((V[lang] && V[lang][v]) || v); }
+  // نص مكتوب من لوحة التحكم مع ترجماته الاختيارية
+  function tx(text, tr){ return (lang !== "ar" && tr && tr[lang]) ? tr[lang] : text; }
 
   function esc(s){
     return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
@@ -374,7 +631,9 @@
   function money(n){ return String(Math.round(Number(n) * 100) / 100); }
   function joinAnd(list){
     if (list.length <= 1) return list.join("");
-    return list.slice(0, -1).join("، ") + " و" + list[list.length - 1];
+    var and = t("and");
+    if (lang === "ar") return list.slice(0, -1).join("، ") + " و" + list[list.length - 1];
+    return list.slice(0, -1).join(lang === "ur" ? "، " : ", ") + and + list[list.length - 1];
   }
   function waNumber(){ return String(D.whatsapp || "").replace(/\D/g, ""); }
   function localPhone(){ var n = waNumber(); return n.indexOf("966") === 0 ? "0" + n.slice(3) : n; }
@@ -392,13 +651,13 @@
     return r;
   }
   function isFull(r){ return r[0] === "00:00" && r[1] === "24:00"; }
-  function fmt(t){
-    var p = t.split(":"), h = +p[0], m = p[1];
-    if (h === 24 || h === 0) return "12:" + m + " منتصف الليل";
-    return (h % 12 || 12) + ":" + m + " " + (h < 12 ? "ص" : "م");
+  function fmt(tm){
+    var p = tm.split(":"), h = +p[0], m = p[1];
+    if (h === 24 || h === 0) return "12:" + m + " " + t("midnight");
+    return (h % 12 || 12) + ":" + m + " " + (h < 12 ? t("am") : t("pm"));
   }
-  function fmtRange(r){ return isFull(r) ? "24 ساعة" : fmt(r[0]) + " - " + fmt(r[1]); }
-  function toMin(t){ var p = t.split(":"); return (+p[0]) * 60 + (+p[1]); }
+  function fmtRange(r){ return isFull(r) ? t("h24") : fmt(r[0]) + " - " + fmt(r[1]); }
+  function toMin(tm){ var p = tm.split(":"); return (+p[0]) * 60 + (+p[1]); }
   function nowKSA(){
     var d = new Date();
     return new Date(d.getTime() + d.getTimezoneOffset() * 60000 + 3 * 3600000);
@@ -419,48 +678,69 @@
     var n = nowKSA();
     return n.getFullYear() + "-" + ("0" + (n.getMonth() + 1)).slice(-2) + "-" + ("0" + n.getDate()).slice(-2);
   }
-  var MONTHS = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
   function fmtDate(iso){
     var p = String(iso).split("-");
-    return p.length === 3 ? (+p[2]) + " " + MONTHS[(+p[1]) - 1] + " " + p[0] : iso;
+    if (p.length !== 3) return iso;
+    var m = t("months")[(+p[1]) - 1];
+    return lang === "en" ? m + " " + (+p[2]) + ", " + p[0] : (+p[2]) + " " + m + " " + p[0];
   }
   function always24(){
     return [0,1,2,3,4,5,6].every(function(d){ var r = ranges(d); return r.length === 1 && isFull(r[0]); });
   }
   function hoursBadge(){
-    if (always24()) return "مفتوحين 24 ساعة";
+    if (always24()) return t("badge24");
     var r = ranges(nowKSA().getDay());
-    return r.length ? "اليوم: " + r.map(fmtRange).join(" و ") : "اليوم: مغلق";
+    return r.length ? t("today", {x: r.map(fmtRange).join(" / ")}) : t("todayClosed");
+  }
+
+  // «14.99 ريال بدل 17 ريال» ← سعر جديد وسعر قديم مشطوب، بعملة اللغة المختارة
+  function priceHtml(p){
+    var s = String(p || "").trim();
+    var m = s.match(/^([\d.,]+)\s*(?:ريال|ر\.س)?\s*بدل\s*([\d.,]+)\s*(?:ريال|ر\.س)?$/);
+    if (m) return '<div class="price">' + esc(m[1] + " " + t("sar")) + '<span class="old">' + esc(m[2] + " " + t("sar")) + "</span></div>";
+    m = s.match(/^([\d.,]+)\s*(?:ريال|ر\.س)$/);
+    if (m) return '<div class="price">' + esc(m[1] + " " + t("sar")) + "</div>";
+    return s ? '<div class="price">' + esc(s) + "</div>" : "";
   }
 
   /* ===== عرض المحتوى ===== */
   function render(){
-    var name = D.storeName || "";
-    var areas = (D.areas || []).filter(Boolean);
+    var name = tv(D.storeName || "");
+    var areasAr = (D.areas || []).filter(Boolean);
+    var areas = areasAr.map(tv);
     var pays = (D.payments || []).filter(Boolean);
     var min = Number(D.freeDeliveryMin) || 0, fee = Number(D.deliveryFee) || 0;
 
-    document.title = name + " | " + (D.tagline || "");
-    all(".js-name").forEach(function(el){ el.textContent = name; });
-    all(".js-tagline").forEach(function(el){ el.textContent = D.tagline || ""; });
-    all(".js-address").forEach(function(el){ el.textContent = D.address || ""; });
+    document.documentElement.lang = lang;
+    document.documentElement.dir = RTL[lang] ? "rtl" : "ltr";
+    document.title = name + " | " + tv(D.tagline || "");
+    all("#langbar button").forEach(function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang)); });
+    all("[data-i18n]").forEach(function(el){ el.textContent = t(el.getAttribute("data-i18n")); });
+    all("[data-i18n-ph]").forEach(function(el){ el.placeholder = t(el.getAttribute("data-i18n-ph")); });
+
     var logo = safeSrc(D.logo);
     document.body.classList.toggle("has-logo", !!logo);
     all(".js-logo").forEach(function(el){ if (logo) { el.src = logo; el.alt = name; } else el.removeAttribute("src"); });
+    all(".js-name").forEach(function(el){ el.textContent = name; });
+    all(".js-tagline").forEach(function(el){ el.textContent = tv(D.tagline || ""); });
+    all(".js-address").forEach(function(el){ el.textContent = tv(D.address || ""); });
     all(".js-map").forEach(function(el){ el.href = safeUrl(D.mapsUrl); });
-    $("heroTitle").textContent = D.heroTitle || "";
-    $("heroText").textContent = D.heroText || "";
+    $("heroTitle").textContent = tv(D.heroTitle || "");
+    $("heroText").textContent = tv(D.heroText || "");
 
+    var annText = tx(D.announcement || "", D.announcementTr);
     var ann = $("announce");
-    ann.textContent = D.announcement || "";
-    ann.classList.toggle("show", !!(D.announcement || "").trim());
+    ann.textContent = annText;
+    ann.classList.toggle("show", !!annText.trim());
 
     // الشارات
     var badges = [];
-    if (fee === 0) badges.push("🚚 توصيل مجاني");
-    else if (min > 0) badges.push("🚚 توصيل مجاني فوق " + money(min) + " ريال");
+    if (fee === 0) badges.push(t("badgeFreeAlways"));
+    else if (min > 0) badges.push(t("badgeFree", {n: money(min)}));
     if (areas.length) badges.push("📍 " + joinAnd(areas));
-    if (pays.length) badges.push("💳 " + pays.map(function(p){ return p.replace(/ عند الاستلام$/, ""); }).join(" · "));
+    if (pays.length) badges.push("💳 " + pays.map(function(p){
+      return lang === "ar" ? p.replace(/ عند الاستلام$/, "") : ((V[lang] && V[lang]["short:" + p]) || tv(p));
+    }).join(" · "));
     badges.push("🕒 " + hoursBadge());
     $("badges").innerHTML = badges.map(function(b){ return '<span class="badge">' + esc(b) + "</span>"; }).join("");
 
@@ -468,25 +748,29 @@
     var fc = $("feeCards");
     if (fee === 0) {
       fc.className = "fees one";
-      fc.innerHTML = '<div class="fee free"><div class="amount">مجاناً</div><div class="cond">التوصيل مجاني على كل الطلبات</div></div>';
+      fc.innerHTML = '<div class="fee free"><div class="amount">' + esc(t("free")) + '</div><div class="cond">' + esc(t("freeAll")) + "</div></div>";
     } else if (min > 0) {
       fc.className = "fees";
-      fc.innerHTML = '<div class="fee free"><div class="amount">مجاناً</div><div class="cond">إذا طلبك ' + esc(money(min)) + ' ريال أو أكثر</div></div>' +
-        '<div class="fee"><div class="amount">' + esc(money(fee)) + ' ر.س</div><div class="cond">إذا طلبك أقل من ' + esc(money(min)) + ' ريال</div></div>';
+      fc.innerHTML = '<div class="fee free"><div class="amount">' + esc(t("free")) + '</div><div class="cond">' + esc(t("freeIf", {n: money(min)})) + "</div></div>" +
+        '<div class="fee"><div class="amount">' + esc(money(fee) + " " + t("sar")) + '</div><div class="cond">' + esc(t("feeIf", {n: money(min)})) + "</div></div>";
     } else {
       fc.className = "fees one";
-      fc.innerHTML = '<div class="fee"><div class="amount">' + esc(money(fee)) + ' ر.س</div><div class="cond">رسوم التوصيل لكل طلب</div></div>';
+      fc.innerHTML = '<div class="fee"><div class="amount">' + esc(money(fee) + " " + t("sar")) + '</div><div class="cond">' + esc(t("feeAll")) + "</div></div>";
     }
 
-    // قائمة الأحياء
+    // قائمة الأحياء (القيمة تبقى بالعربي عشان توصل الرسالة للمحل بالعربي)
     var sel = $("area"), cur = sel.value || savedArea;
-    sel.innerHTML = '<option value="">اختر حيّك</option>' +
-      areas.map(function(a){ return '<option value="' + esc(a) + '">' + esc(a) + "</option>"; }).join("");
-    if (areas.indexOf(cur) > -1) sel.value = cur;
+    sel.innerHTML = '<option value="">' + esc(t("chooseArea")) + "</option>" +
+      areasAr.map(function(a){
+        var label = tv(a);
+        return '<option value="' + esc(a) + '">' + esc(label === a ? a : label + " (" + a + ")") + "</option>";
+      }).join("");
+    if (areasAr.indexOf(cur) > -1) sel.value = cur;
 
     // الأصناف السريعة
+    $("chips").setAttribute("aria-label", t("items"));
     $("chips").innerHTML = (D.quickItems || []).filter(Boolean).map(function(q){
-      return '<button type="button" class="chip">' + esc(q) + "</button>";
+      return '<button type="button" class="chip" data-v="' + esc(q) + '">' + esc(tv(q)) + "</button>";
     }).join("");
 
     // طرق الدفع
@@ -494,22 +778,22 @@
     $("payField").style.display = pays.length ? "" : "none";
     $("pay").style.gridTemplateColumns = "repeat(" + Math.min(Math.max(pays.length, 1), 3) + ",1fr)";
     $("pay").innerHTML = pays.map(function(p){
-      return '<button type="button" aria-pressed="' + (p === payment) + '" data-v="' + esc(p) + '">' + esc(p) + "</button>";
+      return '<button type="button" aria-pressed="' + (p === payment) + '" data-v="' + esc(p) + '">' + esc(tv(p)) + "</button>";
     }).join("");
 
     // المناطق
-    $("areasSub").textContent = "نوصل حالياً لهذي الأحياء";
     var pin = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="#0b6e79"/><circle cx="12" cy="10" r="2.6" fill="#f6eddc"/></svg>';
     $("areaCards").innerHTML = areas.map(function(a){ return '<div class="area">' + pin + esc(a) + "</div>"; }).join("");
-    $("askArea").href = "https://wa.me/" + waNumber() + "?text=" + encodeURIComponent("السلام عليكم، هل توصلون لحيّي؟");
-    $("aboutDelivery").textContent = "نجهز طلبك ونوصله لين عندك" + (areas.length ? " في " + joinAnd(areas) : "");
+    $("askArea").href = "https://wa.me/" + waNumber() + "?text=" + encodeURIComponent(t("askAreaMsg"));
+    $("aboutDelivery").textContent = t("p3d", {areas: joinAnd(areas)});
 
     // الدوام
-    var todayIdx = nowKSA().getDay();
+    var todayIdx = nowKSA().getDay(), days = t("days");
+    $("hoursTable").setAttribute("aria-label", t("hoursTitle"));
     $("hoursTable").tBodies[0].innerHTML = ORDER.map(function(d){
       var r = ranges(d);
-      var val = r.length ? r.map(function(x){ return esc(fmtRange(x)); }).join("<br>") : "مغلق";
-      return "<tr" + (d === todayIdx ? ' class="today"' : "") + "><td>" + DAYS[d] + (d === todayIdx ? " (اليوم)" : "") + "</td><td>" + val + "</td></tr>";
+      var val = r.length ? r.map(function(x){ return esc(fmtRange(x)); }).join("<br>") : esc(t("closed"));
+      return "<tr" + (d === todayIdx ? ' class="today"' : "") + "><td>" + esc(days[d]) + (d === todayIdx ? " " + esc(t("todayTag")) : "") + "</td><td>" + val + "</td></tr>";
     }).join("");
     $("closedBar").classList.toggle("show", !isOpen());
 
@@ -520,35 +804,35 @@
     }) : [];
     $("offersBox").innerHTML = offers.length
       ? '<div class="offers">' + offers.map(function(o){
-          var img = safeSrc(o.image);
+          var img = safeSrc(o.image), title = tx(o.title, o.tr), note = tx(o.note, o.noteTr);
           return '<div class="offer">' +
-            (img ? '<img src="' + esc(img) + '" alt="' + esc(o.title) + '" loading="lazy">' : "") +
-            "<h3>" + esc(o.title) + "</h3>" +
-            (o.price ? '<div class="price">' + esc(o.price) + "</div>" : "") +
-            (o.note ? "<p>" + esc(o.note) + "</p>" : "") +
-            (o.until ? '<span class="until">ينتهي ' + esc(fmtDate(o.until)) + "</span>" : "") + "</div>";
+            (img ? '<img src="' + esc(img) + '" alt="' + esc(title) + '" loading="lazy">' : "") +
+            "<h3>" + esc(title) + "</h3>" + priceHtml(o.price) +
+            (note ? "<p>" + esc(note) + "</p>" : "") +
+            (o.until ? '<span class="until">' + esc(t("ends", {d: fmtDate(o.until)})) + "</span>" : "") + "</div>";
         }).join("") + "</div>"
-      : '<div class="soon"><div style="font-size:2.4rem" aria-hidden="true">🏷️</div><strong>عروض الأسبوع قريباً</strong><p class="muted">ترقبونا، بننزل عروض حلوة على أغراض البيت</p></div>';
+      : '<div class="soon"><div style="font-size:2.4rem" aria-hidden="true">🏷️</div><strong>' + esc(t("soonTitle")) + '</strong><p class="muted">' + esc(t("soonText")) + "</p></div>";
 
     // الأخبار
     var news = (D.news || []).filter(function(n){ return n && n.title; })
       .sort(function(a, b){ return (b.date || "").localeCompare(a.date || ""); });
     $("news").style.display = news.length ? "" : "none";
     $("newsBox").innerHTML = news.map(function(n){
-      var img = safeSrc(n.image);
+      var img = safeSrc(n.image), tr = (n.tr && n.tr[lang]) || {};
+      var title = (lang !== "ar" && tr.title) || n.title, text = (lang !== "ar" && tr.text) || n.text;
       return '<article class="news-item">' +
-        (img ? '<img src="' + esc(img) + '" alt="' + esc(n.title) + '" loading="lazy">' : "") +
+        (img ? '<img src="' + esc(img) + '" alt="' + esc(title) + '" loading="lazy">' : "") +
         (n.date ? '<time datetime="' + esc(n.date) + '">' + esc(fmtDate(n.date)) + "</time>" : "") +
-        "<h3>" + esc(n.title) + "</h3>" +
-        (n.text ? "<p>" + esc(n.text) + "</p>" : "") + "</article>";
+        "<h3>" + esc(title) + "</h3>" +
+        (text ? "<p>" + esc(text) + "</p>" : "") + "</article>";
     }).join("");
 
     // الصور
     $("photos").innerHTML = (D.photos || []).map(function(p){
-      var src = safeSrc(p && p.src);
+      var src = safeSrc(p && p.src), label = tv((p && p.label) || "");
       return src
-        ? '<div class="photo has-img"><img src="' + esc(src) + '" alt="' + esc(p.label || "") + '" loading="lazy"></div>'
-        : '<div class="photo">[' + esc((p && p.label) || "صورة") + "]</div>";
+        ? '<div class="photo has-img"><img src="' + esc(src) + '" alt="' + esc(label) + '" loading="lazy"></div>'
+        : '<div class="photo">[' + esc(label) + "]</div>";
     }).join("");
 
     // التذييل
@@ -556,8 +840,36 @@
     fp.textContent = localPhone();
     fp.href = "https://wa.me/" + waNumber();
 
+    if (tried) validate(false);
     update();
   }
+
+  /* ===== اللغة ===== */
+  function loadFont(l){
+    if (!FONTS[l] || document.getElementById("font-" + l)) return;
+    var link = document.createElement("link");
+    link.id = "font-" + l; link.rel = "stylesheet"; link.href = FONTS[l];
+    document.head.appendChild(link);
+  }
+  function setLang(l, save){
+    if (LANGS.indexOf(l) === -1) l = "ar";
+    lang = l;
+    loadFont(l);
+    if (save) { try { localStorage.setItem("ibtisama_lang", l); } catch (e) {} }
+    render();
+  }
+  function initialLang(){
+    var m = location.search.match(/[?&]lang=(\w+)/);
+    if (m && LANGS.indexOf(m[1]) > -1) return m[1];
+    try { var s = localStorage.getItem("ibtisama_lang"); if (s) return s; } catch (e) {}
+    var nav = (navigator.languages || [navigator.language || ""]).map(function(x){ return String(x).slice(0, 2).toLowerCase(); });
+    for (var i = 0; i < nav.length; i++) if (["ur","bn","hi"].indexOf(nav[i]) > -1) return nav[i];
+    return "ar";
+  }
+  $("langbar").addEventListener("click", function(e){
+    var b = e.target.closest("button[data-lang]"); if (!b) return;
+    setLang(b.getAttribute("data-lang"), true);
+  });
 
   /* ===== النموذج ===== */
   var nameEl = $("name"), areaEl = $("area"), addrEl = $("address"),
@@ -585,12 +897,14 @@
       .filter(function(l){ return l.length; });
   }
 
+  // الرسالة تبقى بالعربي عشان يقرأها المحل، ونذكر لغة الزبون عشان نرد عليه بلغته
   function buildMessage(){
     var lines = ["🛒 طلب جديد - " + (D.storeName || ""), ""];
     var n = nameEl.value.trim(), a = areaEl.value, ad = addrEl.value.trim(), no = notesEl.value.trim();
     if (n) lines.push("الاسم: " + n);
     if (a) lines.push("الحي: " + a);
     if (ad) lines.push("العنوان: " + ad);
+    if (lang !== "ar") lines.push("🌐 لغة الزبون: " + LANG_NAMES[lang]);
     lines.push("", "الطلب:");
     getItems().forEach(function(i){ lines.push("• " + i); });
     var tail = [];
@@ -603,7 +917,6 @@
 
   function update(){
     sendBtn.href = "https://wa.me/" + waNumber() + "?text=" + encodeURIComponent(buildMessage());
-    if (tried) validate(false);
   }
 
   function setErr(el, errId, bad){
@@ -617,10 +930,10 @@
     setErr(areaEl, "areaErr", areaBad);
     setErr(itemsEl, "itemsErr", itemsBad);
     var msgs = [];
-    if (areaBad) msgs.push("اختر الحي");
-    if (itemsBad) msgs.push("اكتب طلبك");
+    if (areaBad) msgs.push(t("errArea"));
+    if (itemsBad) msgs.push(t("errItems"));
     if (msgs.length) {
-      formErr.textContent = "باقي شي بسيط قبل الإرسال: " + msgs.join(" و ");
+      formErr.textContent = t("formErr", {x: msgs.join(t("and"))});
       formErr.classList.add("show");
       if (focus) {
         var target = areaBad ? areaEl : itemsEl;
@@ -641,15 +954,18 @@
   });
 
   [nameEl, areaEl, addrEl, itemsEl, notesEl].forEach(function(el){
-    el.addEventListener("input", update);
-    el.addEventListener("change", update);
+    function onChange(){ update(); if (tried) validate(false); }
+    el.addEventListener("input", onChange);
+    el.addEventListener("change", onChange);
   });
   [nameEl, areaEl, addrEl].forEach(function(el){ el.addEventListener("change", saveCustomer); });
 
+  // الصنف يُضاف بلغة الزبون، ومعه الاسم العربي بين قوسين عشان يفهمه المحل
   $("chips").addEventListener("click", function(e){
     var b = e.target.closest(".chip"); if (!b) return;
+    var ar = b.getAttribute("data-v"), label = tv(ar);
     var v = itemsEl.value.replace(/\s+$/, "");
-    itemsEl.value = (v ? v + "\n" : "") + b.textContent.trim() + " ";
+    itemsEl.value = (v ? v + "\n" : "") + (label === ar ? ar : label + " (" + ar + ")") + " ";
     itemsEl.focus();
     var len = itemsEl.value.length;
     try { itemsEl.setSelectionRange(len, len); } catch (err) {}
@@ -665,7 +981,7 @@
     update();
   });
 
-  render();
+  setLang(initialLang(), false);
 
   // تحميل آخر نسخة من البيانات
   if (window.fetch) {

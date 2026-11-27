@@ -47,6 +47,10 @@
   .offer{border:2px dashed var(--sand-dark);border-radius:12px;padding:12px;margin-bottom:10px}
   .offer img.thumb{width:100%;max-height:200px;object-fit:cover;border-radius:10px;display:block;margin-bottom:8px}
   .offer .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  details.tr{background:#f7fbfb;border:1px solid var(--sea-soft);border-radius:10px;padding:8px 10px;margin-top:10px}
+  details.tr summary{cursor:pointer;font-weight:700;color:var(--sea-dark);padding:4px 0}
+  details.tr label{font-size:.92rem;margin-top:8px}
+  details.tr .ltr{direction:ltr;text-align:left}
   .pick{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:3px dashed var(--sea);background:var(--sea-soft);color:var(--sea-dark);border-radius:12px;min-height:130px;font-weight:800;font-size:1.05rem;text-align:center;cursor:pointer;margin-bottom:6px}
   .pick .pick-ic{font-size:2rem;line-height:1}
   .pick small{font-weight:500;color:var(--muted)}
@@ -109,6 +113,10 @@
       <h2>إعلان أعلى الصفحة</h2>
       <p class="hint">شريط يظهر فوق الموقع لأي خبر، مثل: «توصيل مجاني طول هذا الأسبوع». خلّه فاضي إذا ما تبي شريط.</p>
       <input type="text" id="f_announcement" placeholder="مثلاً: وصلتنا تمور جديدة 🌴">
+      <details class="tr" id="annTr"><summary>🌐 الإعلان باللغات الثانية (اختياري)</summary>
+        <p class="hint" style="margin:6px 0 0">إذا تركتها فاضية، يظهر الإعلان بالعربي لكل الزبائن.</p>
+        <div id="annTrBox"></div>
+      </details>
     </section>
 
     <section class="card">
@@ -197,7 +205,7 @@
   </div>
 </div>
 
-<p class="version">نسخة اللوحة: 3</p>
+<p class="version">نسخة اللوحة: 4</p>
 
 <div class="savebar hidden" id="savebar">
   <div class="inner">
@@ -317,6 +325,8 @@
 
   function fill(){
     simple.forEach(function(k){ $("f_" + k).value = data[k] || ""; });
+    $("annTrBox").innerHTML = trInputs(data.announcementTr);
+    if (data.announcementTr) $("annTr").open = true;
     lists.forEach(function(k){ $("f_" + k).value = (data[k] || []).join("\n"); });
     var wa = String(data.whatsapp || "");
     $("f_whatsapp").value = wa.indexOf("966") === 0 ? "0" + wa.slice(3) : wa;
@@ -399,11 +409,49 @@
   function delBtn(i, what){
     return '<div class="acts"><button type="button" class="btn danger small" data-del="' + i + '">🗑️ حذف ' + what + "</button></div>";
   }
+  /* خانات الترجمة */
+  var TR_LANGS = [["en","English"],["ur","اردو"],["bn","বাংলা"],["hi","हिन्दी"]];
+  function trInputs(tr, key, multiline){
+    tr = tr || {};
+    return TR_LANGS.map(function(L){
+      var v = key ? ((tr[L[0]] || {})[key] || "") : (tr[L[0]] || "");
+      var attrs = ' data-tr="' + L[0] + '"' + (key ? ' data-trk="' + key + '"' : "") + ' lang="' + L[0] + '"' + (L[0] === "ur" ? "" : ' class="ltr"');
+      return "<label>" + L[1] + "</label>" + (multiline
+        ? "<textarea" + attrs + ' style="min-height:70px">' + esc(v) + "</textarea>"
+        : '<input type="text"' + attrs + ' value="' + esc(v) + '">');
+    }).join("");
+  }
+  function setTr(obj, el){
+    var l = el.getAttribute("data-tr"), k = el.getAttribute("data-trk");
+    obj.tr = obj.tr || {};
+    if (k) { obj.tr[l] = obj.tr[l] || {}; obj.tr[l][k] = el.value; } else obj.tr[l] = el.value;
+  }
+  function cleanTr(tr){
+    var out = {};
+    Object.keys(tr || {}).forEach(function(l){
+      var v = tr[l];
+      if (typeof v === "string") { if (v.trim()) out[l] = v.trim(); }
+      else if (v) {
+        var o = {};
+        Object.keys(v).forEach(function(k){ if ((v[k] || "").trim()) o[k] = v[k].trim(); });
+        if (Object.keys(o).length) out[l] = o;
+      }
+    });
+    return Object.keys(out).length ? out : undefined;
+  }
+  $("annTrBox").addEventListener("input", function(e){
+    if (!e.target.getAttribute("data-tr")) return;
+    var holder = {tr: data.announcementTr || {}};
+    setTr(holder, e.target); data.announcementTr = holder.tr; dirty = true;
+  });
+
   /* يربط قائمة (عروض أو أخبار) بأحداثها */
   function bindList(boxId, getList, rerender, prefix){
     var box = $(boxId);
     box.addEventListener("input", function(e){
-      var it = e.target.closest(".offer"), k = e.target.getAttribute("data-k"); if (!it || !k) return;
+      var it = e.target.closest(".offer"); if (!it) return;
+      if (e.target.getAttribute("data-tr")) { setTr(getList()[+it.getAttribute("data-i")], e.target); dirty = true; return; }
+      var k = e.target.getAttribute("data-k"); if (!k) return;
       getList()[+it.getAttribute("data-i")][k] = e.target.value; dirty = true;
     });
     box.addEventListener("click", function(e){
@@ -430,6 +478,9 @@
         '<label>السعر</label><input type="text" data-k="price" value="' + esc(o.price) + '" placeholder="مثلاً: 45 ريال بدل 55">' +
         '<label>ملاحظة (اختياري)</label><input type="text" data-k="note" value="' + esc(o.note) + '" placeholder="مثلاً: الكمية محدودة">' +
         '<label>ينتهي العرض بعد يوم (اختياري)</label><input type="date" data-k="until" value="' + esc(o.until) + '">' +
+        '<details class="tr"' + (o.tr ? " open" : "") + '><summary>🌐 اسم العرض باللغات الثانية (اختياري)</summary>' +
+          '<p class="hint" style="margin:6px 0 0">السعر يتترجم تلقائياً إذا كتبته بالشكل: 45 ريال بدل 55 ريال</p>' +
+          trInputs(o.tr) + "</details>" +
         delBtn(i, "العرض") + '</div>';
     }).join("") : '<p class="hint">ما فيه عروض حالياً.</p>';
   }
@@ -451,6 +502,9 @@
         '<label>عنوان الخبر</label><input type="text" data-k="title" value="' + esc(n.title) + '" placeholder="مثلاً: وصلتنا تمور الموسم 🌴">' +
         '<label>التفاصيل (اختياري)</label><textarea data-k="text" style="min-height:80px" placeholder="اكتب الخبر هنا">' + esc(n.text) + '</textarea>' +
         '<label>التاريخ</label><input type="date" data-k="date" value="' + esc(n.date) + '">' +
+        '<details class="tr"' + (n.tr ? " open" : "") + '><summary>🌐 الخبر باللغات الثانية (اختياري)</summary>' +
+          '<p class="hint" style="margin:8px 0 0;font-weight:700">العنوان</p>' + trInputs(n.tr, "title") +
+          '<p class="hint" style="margin:12px 0 0;font-weight:700">التفاصيل</p>' + trInputs(n.tr, "text", true) + "</details>" +
         delBtn(i, "الخبر") + '</div>';
     }).join("") : '<p class="hint">ما فيه أخبار حالياً.</p>';
   }
@@ -564,10 +618,11 @@
     out.freeDeliveryMin = Math.max(0, parseFloat($("f_freeDeliveryMin").value) || 0);
     out.deliveryFee = Math.max(0, parseFloat($("f_deliveryFee").value) || 0);
     out.offers.enabled = $("f_offersEnabled").checked;
+    out.announcementTr = cleanTr(data.announcementTr);
     out.offers.items = out.offers.items.filter(function(o){ return (o.title || "").trim(); })
-      .map(function(o){ return {title: o.title.trim(), price: (o.price || "").trim(), note: (o.note || "").trim(), until: o.until || "", image: o.image || ""}; });
+      .map(function(o){ return {title: o.title.trim(), price: (o.price || "").trim(), note: (o.note || "").trim(), until: o.until || "", image: o.image || "", tr: cleanTr(o.tr)}; });
     out.news = (out.news || []).filter(function(n){ return (n.title || "").trim(); })
-      .map(function(n){ return {title: n.title.trim(), text: (n.text || "").trim(), date: n.date || "", image: n.image || ""}; })
+      .map(function(n){ return {title: n.title.trim(), text: (n.text || "").trim(), date: n.date || "", image: n.image || "", tr: cleanTr(n.tr)}; })
       .sort(function(a, b){ return (b.date || "").localeCompare(a.date || ""); });
     out.hours = out.hours.map(function(h){
       if (h.mode !== "open") return {mode: h.mode};
