@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ابتسامة الشاطئ | بقالة حيّك في صبيا</title>
+<meta name="description" content="اكتب طلبك من بقالة ابتسامة الشاطئ في صبيا ونوصله لباب بيتك. توصيل للحشيبرية والجمالة، ومجاني فوق 50 ريال.">
+<meta name="theme-color" content="#0b6e79">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sea:#0b6e79; --sea-dark:#08525a; --sea-soft:#e3f1f2;
+    --sand:#f6eddc; --sand-dark:#e8d9bb;
+    --sun:#f2a541; --sun-dark:#d98b22;
+    --wa:#1fa855; --wa-dark:#178a45;
+    --ink:#1d2b2d; --muted:#5b6b6d; --white:#fff;
+    --error:#c0392b; --error-bg:#fdecea;
+    --radius:18px; --shadow:0 6px 20px rgba(11,110,121,.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Tajawal",system-ui,sans-serif;background:var(--white);color:var(--ink);font-size:18px;line-height:1.7;-webkit-tap-highlight-color:transparent}
+  a{color:inherit}
+  .wrap{max-width:960px;margin:0 auto;padding:0 16px}
+  section{padding:48px 0}
+  .sand{background:var(--sand)}
+  h2{font-size:1.65rem;font-weight:800;color:var(--sea-dark);margin-bottom:8px;line-height:1.4}
+  .sub{color:var(--muted);margin-bottom:24px}
+  .ph{color:#9a6a1f;background:#fff6e6;border-radius:6px;padding:0 6px;font-weight:500}
+
+  /* شريط الإغلاق */
+  #closedBar{display:none;background:var(--sun);color:#3b2500;text-align:center;font-weight:700;padding:10px 16px;font-size:1rem}
+  #closedBar.show{display:block}
+
+  /* الواجهة */
+  .hero{background:linear-gradient(180deg,var(--sea) 0%,#0e8591 70%,#139aa4 100%);color:var(--white);padding:40px 0 0;position:relative;overflow:hidden}
+  .hero .wrap{position:relative;z-index:1;padding-bottom:70px;text-align:center}
+  .brand{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:28px}
+  .logo{width:72px;height:72px;border-radius:50%;background:var(--sand);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.18);flex-shrink:0}
+  .brand-name{font-size:1.5rem;font-weight:800;line-height:1.2;text-align:right}
+  .brand-tag{font-size:1rem;opacity:.9;font-weight:500}
+  .hero h1{font-size:2.1rem;font-weight:800;line-height:1.35;margin-bottom:14px}
+  .hero p.lead{font-size:1.15rem;opacity:.95;max-width:560px;margin:0 auto 28px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:58px;padding:14px 30px;border-radius:999px;font-family:inherit;font-size:1.2rem;font-weight:800;text-decoration:none;border:0;cursor:pointer;transition:transform .15s,background .15s}
+  .btn:active{transform:scale(.97)}
+  .btn-sun{background:var(--sun);color:#3b2500;box-shadow:0 6px 18px rgba(242,165,65,.45)}
+  .btn-sun:hover{background:var(--sun-dark)}
+  .badges{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:28px}
+  .badge{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:6px 14px;font-size:.92rem;font-weight:500}
+  .wave{position:absolute;bottom:-1px;left:0;width:100%;height:60px;display:block}
+
+  /* رسوم التوصيل */
+  .fees{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .fee{background:var(--white);border-radius:var(--radius);padding:24px 14px;text-align:center;box-shadow:var(--shadow);border-top:6px solid var(--sea)}
+  .fee.free{border-top-color:var(--wa)}
+  .fee .amount{font-size:2rem;font-weight:800;color:var(--sea-dark);line-height:1.3}
+  .fee.free .amount{color:var(--wa-dark)}
+  .fee .cond{color:var(--muted);font-size:1rem}
+
+  /* النموذج */
+  .card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 18px}
+  .field{margin-bottom:22px}
+  label.lbl,.lbl{display:block;font-weight:700;font-size:1.08rem;margin-bottom:8px}
+  .opt{color:var(--muted);font-weight:500;font-size:.9rem}
+  .req{color:var(--error)}
+  input[type=text],select,textarea{width:100%;font-family:inherit;font-size:1.1rem;color:var(--ink);background:#fbfaf6;border:2px solid var(--sand-dark);border-radius:14px;padding:14px;min-height:56px;transition:border-color .15s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--sea);background:var(--white)}
+  textarea{resize:vertical;line-height:1.8}
+  #items{min-height:190px}
+  .invalid{border-color:var(--error)!important;background:var(--error-bg)!important}
+  .err{display:none;color:var(--error);font-weight:700;font-size:.98rem;margin-top:6px}
+  .err.show{display:block}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .chip{font-family:inherit;font-size:1.02rem;font-weight:700;background:var(--sea-soft);color:var(--sea-dark);border:2px solid transparent;border-radius:999px;padding:8px 16px;min-height:46px;cursor:pointer}
+  .chip:hover{border-color:var(--sea)}
+  .chip:active{transform:scale(.95)}
+  .chips-hint{font-size:.92rem;color:var(--muted);margin-top:8px}
+  .pay{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .pay button{font-family:inherit;font-size:1rem;font-weight:700;min-height:64px;padding:8px 6px;border-radius:14px;border:2px solid var(--sand-dark);background:#fbfaf6;color:var(--ink);cursor:pointer;line-height:1.35}
+  .pay button[aria-pressed=true]{background:var(--sea);border-color:var(--sea);color:var(--white)}
+  .btn-wa{width:100%;background:var(--wa);color:var(--white);font-size:1.25rem;min-height:66px;box-shadow:0 6px 18px rgba(31,168,85,.35)}
+  .btn-wa:hover{background:var(--wa-dark)}
+  #formError{display:none;background:var(--error-bg);color:var(--error);border-radius:12px;padding:12px 14px;font-weight:700;margin-bottom:14px}
+  #formError.show{display:block}
+  .after-note{margin-top:14px;background:var(--sea-soft);border-radius:12px;padding:12px 14px;font-size:1rem;color:var(--sea-dark)}
+
+  /* الأحياء */
+  .areas{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+  .area{background:var(--white);border-radius:var(--radius);padding:22px 12px;text-align:center;box-shadow:var(--shadow);font-size:1.3rem;font-weight:800;color:var(--sea-dark)}
+  .area svg{display:block;margin:0 auto 6px}
+  .center{text-align:center}
+  .btn-outline{background:var(--white);color:var(--sea-dark);border:2px solid var(--sea)}
+  .btn-outline:hover{background:var(--sea-soft)}
+  .muted{color:var(--muted)}
+  .wa-link{color:var(--wa-dark);font-weight:700}
+
+  /* الدوام */
+  .hours-grid{display:grid;gap:18px}
+  table{width:100%;border-collapse:collapse;font-size:1.05rem}
+  td{padding:12px 6px;border-bottom:1px solid var(--sand-dark)}
+  td:first-child{font-weight:700;width:38%}
+  tr.today td{background:var(--sea-soft);color:var(--sea-dark)}
+  .addr{display:flex;gap:12px;align-items:flex-start}
+
+  /* العروض */
+  .soon{border:3px dashed var(--sun);border-radius:var(--radius);padding:44px 16px;text-align:center;background:#fffaf1}
+  .soon strong{display:block;font-size:1.6rem;color:var(--sun-dark);font-weight:800}
+
+  /* تعرف علينا */
+  .points{display:grid;gap:14px;margin-bottom:26px}
+  .point{display:flex;gap:14px;align-items:center;background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+  .point .ic{width:56px;height:56px;border-radius:50%;background:var(--sea-soft);display:grid;place-items:center;flex-shrink:0}
+  .point h3{font-size:1.15rem;font-weight:800;color:var(--sea-dark)}
+  .point p{color:var(--muted);font-size:1rem}
+  .photos{display:grid;grid-template-columns:1fr;gap:14px}
+  .photo{aspect-ratio:4/3;border:3px dashed var(--sea);border-radius:var(--radius);display:grid;place-items:center;text-align:center;color:var(--sea-dark);font-weight:700;background:rgba(255,255,255,.6);padding:12px}
+
+  /* التذييل */
+  footer{background:var(--sea-dark);color:var(--white);padding:36px 0 28px;text-align:center}
+  footer .fname{font-size:1.4rem;font-weight:800}
+  footer .phone{display:inline-block;font-size:1.6rem;font-weight:800;letter-spacing:1px;margin:10px 0;color:var(--white);text-decoration:none;direction:ltr}
+  footer p{opacity:.92}
+  footer a.maplink{color:var(--sun);font-weight:700}
+  footer .ph{background:rgba(255,255,255,.15);color:#ffe2b3}
+
+  @media (min-width:720px){
+    body{font-size:19px}
+    .hero h1{font-size:2.8rem}
+    .points{grid-template-columns:repeat(3,1fr)}
+    .point{flex-direction:column;text-align:center}
+    .photos{grid-template-columns:repeat(3,1fr)}
+    .hours-grid{grid-template-columns:1.2fr 1fr;align-items:start}
+    .card{padding:32px}
+  }
+  @media (max-width:360px){
+    .pay{grid-template-columns:1fr}
+    .fee .amount{font-size:1.6rem}
+  }
+</style>
+</head>
+<body>
+
+<div id="closedBar" role="status">المحل مغلق الآن، اطلب وبنجهز طلبك أول ما نفتح</div>
+
+<!-- 1. الواجهة الرئيسية -->
+<header class="hero">
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="18" r="8" fill="#f2a541"/>
+          <path d="M4 32c5-4 9-4 14 0s9 4 14 0 9-4 12-1" stroke="#0b6e79" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M15 38c3 3 6 4 9 4s6-1 9-4" stroke="#0b6e79" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">ابتسامة الشاطئ</div>
+        <div class="brand-tag">بقالة حيّك في صبيا</div>
+      </div>
+    </div>
+    <h1>اكتب طلبك، ونوصله لباب بيتك</h1>
+    <p class="lead">بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة</p>
+    <a href="#order" class="btn btn-sun">اطلب الآن
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <div class="badges">
+      <span class="badge">🚚 توصيل مجاني فوق 50 ريال</span>
+      <span class="badge">📍 الحشيبرية والجمالة</span>
+      <span class="badge">💳 تحويل · شبكة · كاش</span>
+      <span class="badge">🕒 <span id="badgeHours">مفتوحين 24 ساعة</span></span>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30c120-20 240-20 360 0s240 20 360 0 240-20 360 0 240 20 360 0v30H0z" fill="#f6eddc"/></svg>
+</header>
+
+<!-- 2. رسوم التوصيل -->
+<section class="sand" id="fees">
+  <div class="wrap">
+    <h2>رسوم التوصيل</h2>
+    <p class="sub">واضحة وبدون مفاجآت</p>
+    <div class="fees">
+      <div class="fee free">
+        <div class="amount">مجاناً</div>
+        <div class="cond">إذا طلبك 50 ريال أو أكثر</div>
+      </div>
+      <div class="fee">
+        <div class="amount">5.75 ر.س</div>
+        <div class="cond">إذا طلبك أقل من 50 ريال</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. اطلب الآن -->
+<section id="order">
+  <div class="wrap">
+    <h2>اطلب الآن</h2>
+    <p class="sub">عبّ البيانات واكتب أغراضك، وإحنا نتكفل بالباقي</p>
+    <form class="card" id="orderForm" novalidate onsubmit="return false">
+      <div class="field">
+        <label class="lbl" for="name">الاسم <span class="opt">(اختياري)</span></label>
+        <input type="text" id="name" autocomplete="name" placeholder="مثلاً: أبو محمد">
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="area">الحي <span class="req">*</span></label>
+        <select id="area" aria-describedby="areaErr">
+          <option value="">اختر حيّك</option>
+          <option value="الحشيبرية">الحشيبرية</option>
+          <option value="الجمالة">الجمالة</option>
+        </select>
+        <div class="err" id="areaErr">لو سمحت اختر الحي عشان نعرف وين نوصل</div>
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="address">وصف العنوان <span class="opt">(اختياري)</span></label>
+        <input type="text" id="address" autocomplete="street-address" placeholder="الشارع، أقرب معلم، لون الباب">
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="items">وش تحتاج؟ <span class="req">*</span></label>
+        <textarea id="items" aria-describedby="itemsErr" placeholder="اكتب كل صنف في سطر، مثلاً:&#10;كيس رز 5 كيلو&#10;2 حليب طويل الأجل&#10;كرتون بيض"></textarea>
+        <div class="err" id="itemsErr">اكتب طلبك هنا، ولو صنف واحد</div>
+        <div class="chips" id="chips" aria-label="أصناف سريعة">
+          <button type="button" class="chip">رز</button>
+          <button type="button" class="chip">دجاج</button>
+          <button type="button" class="chip">زيت</button>
+          <button type="button" class="chip">سكر</button>
+          <button type="button" class="chip">حليب</button>
+          <button type="button" class="chip">بيض</button>
+          <button type="button" class="chip">خبز</button>
+          <button type="button" class="chip">ماء</button>
+          <button type="button" class="chip">شاي</button>
+          <button type="button" class="chip">مناديل</button>
+        </div>
+        <p class="chips-hint">اضغط على أي صنف يضاف لطلبك، وتقدر تكتب جنبه الكمية أو النوع</p>
+      </div>
+
+      <div class="field">
+        <span class="lbl" id="payLbl">طريقة الدفع</span>
+        <div class="pay" role="group" aria-labelledby="payLbl" id="pay">
+          <button type="button" aria-pressed="false" data-v="تحويل بنكي">تحويل بنكي</button>
+          <button type="button" aria-pressed="false" data-v="شبكة عند الاستلام">شبكة عند الاستلام</button>
+          <button type="button" aria-pressed="false" data-v="كاش عند الاستلام">كاش عند الاستلام</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="notes">ملاحظات <span class="opt">(اختياري)</span></label>
+        <textarea id="notes" rows="2" placeholder="مثلاً: لا تدق الجرس، أو بديل إذا صنف مو موجود"></textarea>
+      </div>
+
+      <div id="formError" role="alert"></div>
+
+      <a id="sendBtn" class="btn btn-wa" href="https://wa.me/966505791265" rel="noopener">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 3C8.8 3 3 8.7 3 15.8c0 2.5.7 4.9 2 7L3 29l6.4-2c2 1.1 4.3 1.7 6.6 1.7 7.2 0 13-5.7 13-12.9S23.2 3 16 3zm0 23.4c-2.1 0-4.1-.6-5.9-1.7l-.4-.2-3.8 1.2 1.2-3.7-.3-.4c-1.2-1.8-1.8-3.9-1.8-6 0-5.9 4.9-10.7 11-10.7s11 4.8 11 10.7-4.9 10.8-11 10.8zm6-8c-.3-.2-2-1-2.3-1.1-.3-.1-.5-.2-.8.2-.2.3-.9 1.1-1.1 1.3-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.7-1.7-1-.9-1.7-2-1.9-2.3-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.6.1-.2 0-.4 0-.6l-1.1-2.6c-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.4 1.4 3.6c.2.2 2.4 3.7 5.9 5.1.8.4 1.5.6 2 .7.8.3 1.6.2 2.2.1.7-.1 2-.8 2.3-1.6.3-.8.3-1.5.2-1.6-.1-.2-.4-.3-.7-.4z"/></svg>
+        أرسل الطلب على الواتساب
+      </a>
+      <p class="after-note">بعد ما ترسل الطلب، أرسل لنا موقعك في نفس المحادثة (زر المشبك ← الموقع) عشان نوصلك بسرعة</p>
+    </form>
+  </div>
+</section>
+
+<!-- 4. المناطق -->
+<section class="sand" id="areas">
+  <div class="wrap">
+    <h2>المناطق اللي نوصل لها</h2>
+    <p class="sub">نوصل حالياً لهذي الأحياء في صبيا</p>
+    <div class="areas">
+      <div class="area">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="#0b6e79"/><circle cx="12" cy="10" r="2.6" fill="#f6eddc"/></svg>
+        الحشيبرية
+      </div>
+      <div class="area">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="#0b6e79"/><circle cx="12" cy="10" r="2.6" fill="#f6eddc"/></svg>
+        الجمالة
+      </div>
+    </div>
+    <p class="center muted" style="margin-bottom:18px">حيّك مو موجود؟ <a class="wa-link" href="https://wa.me/966505791265?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D9%87%D9%84%20%D8%AA%D9%88%D8%B5%D9%84%D9%88%D9%86%20%D9%84%D8%AD%D9%8A%D9%91%D9%8A%D8%9F" rel="noopener">راسلنا على الواتساب</a> ونشوف إذا نقدر نوصل لك</p>
+    <div class="center">
+      <a class="btn btn-outline" href="https://maps.app.goo.gl/xUge2H9bAkNqRFKF7" target="_blank" rel="noopener">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="10" r="2.6" stroke="currentColor" stroke-width="2.2"/></svg>
+        موقع البقالة على خرائط جوجل
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 5. أوقات الدوام والعنوان -->
+<section id="hours">
+  <div class="wrap">
+    <h2>أوقات الدوام والعنوان</h2>
+    <p class="sub">مرّنا أو اطلب من مكانك</p>
+    <div class="hours-grid">
+      <div class="card">
+        <table id="hoursTable" aria-label="أوقات الدوام">
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="card addr">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink:0;margin-top:4px"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="#f2a541"/><circle cx="12" cy="10" r="2.6" fill="#fff"/></svg>
+        <div>
+          <div class="lbl">العنوان</div>
+          <p>بقالة ابتسامة الشاطئ، حي الحشيبرية، صبيا</p>
+          <p style="margin-top:10px"><a class="wa-link" href="https://maps.app.goo.gl/xUge2H9bAkNqRFKF7" target="_blank" rel="noopener" style="color:var(--sea)">افتح الموقع على الخريطة ←</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. العروض -->
+<section class="sand" id="offers">
+  <div class="wrap">
+    <h2>العروض</h2>
+    <div class="soon">
+      <div style="font-size:2.4rem" aria-hidden="true">🏷️</div>
+      <strong>عروض الأسبوع قريباً</strong>
+      <p class="muted">ترقبونا، بننزل عروض حلوة على أغراض البيت</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. تعرّف علينا -->
+<section id="about">
+  <div class="wrap">
+    <h2>تعرّف علينا</h2>
+    <p class="sub">بقالة قريبة منك، وطلبك يوصلك بأسهل طريقة</p>
+    <div class="points">
+      <div class="point">
+        <div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2" stroke="#0b6e79" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20" r="1.6" fill="#0b6e79"/><circle cx="17" cy="20" r="1.6" fill="#0b6e79"/></svg></div>
+        <div><h3>كل أغراض البيت</h3><p>مواد غذائية، منظفات، مشروبات، وكل اللي يحتاجه بيتك</p></div>
+      </div>
+      <div class="point">
+        <div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5h16v11H9l-5 4V5z" stroke="#0b6e79" stroke-width="2.2" stroke-linejoin="round"/><path d="M8 9.5h8M8 12.5h5" stroke="#0b6e79" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+        <div><h3>تطلب بالكلام</h3><p>اكتب أغراضك على راحتك كأنك تكلمنا، بدون تطبيق ولا تسجيل</p></div>
+      </div>
+      <div class="point">
+        <div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-9z" stroke="#0b6e79" stroke-width="2.2" stroke-linejoin="round"/></svg></div>
+        <div><h3>توصيل لباب البيت</h3><p>نجهز طلبك ونوصله لين عندك في الحشيبرية والجمالة</p></div>
+      </div>
+    </div>
+    <div class="photos">
+      <div class="photo">[صورة واجهة المحل]</div>
+      <div class="photo">[صورة من داخل المحل]</div>
+      <div class="photo">[صورة طلب مجهّز]</div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. التذييل -->
+<footer>
+  <div class="wrap">
+    <div class="fname">ابتسامة الشاطئ</div>
+    <p>بقالة حيّك في صبيا</p>
+    <a class="phone" href="https://wa.me/966505791265" rel="noopener">0505791265</a>
+    <p>واتساب الطلبات</p>
+    <p style="margin-top:10px">حي الحشيبرية، صبيا</p>
+    <p style="margin-top:10px"><a class="maplink" href="https://maps.app.goo.gl/xUge2H9bAkNqRFKF7" target="_blank" rel="noopener">موقعنا على الخريطة</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORE_NAME = "ابتسامة الشاطئ";
+  var WA_NUMBER = "966505791265";
+
+  /* ===== أوقات الدوام =====
+     لم تُستخرج من الخرائط بعد. عبّها هنا بصيغة 24 ساعة، مثال:
+     0: [["07:00","13:00"],["16:00","24:00"]]   (الأحد، فترتين)
+     يوم مغلق: []
+     0=الأحد 1=الاثنين 2=الثلاثاء 3=الأربعاء 4=الخميس 5=الجمعة 6=السبت
+     طول ما HOURS = null، الجدول يعرض نص "تُعبأ لاحقاً" وشريط "المحل مغلق" ما يظهر. */
+  var FULL = [["00:00","24:00"]];
+  var HOURS = {0:FULL,1:FULL,2:FULL,3:FULL,4:FULL,5:FULL,6:FULL}; // مفتوح 24 ساعة كل الأيام
+
+  var DAYS = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+  var ORDER = [6,0,1,2,3,4,5]; // يبدأ الجدول من السبت
+
+  function isFull(r){ return r[0] === "00:00" && r[1] === "24:00"; }
+  function fmtRange(r){ return isFull(r) ? "24 ساعة" : fmt(r[0]) + " - " + fmt(r[1]); }
+  function fmt(t){
+    var p = t.split(":"), h = +p[0], m = p[1];
+    if (h === 24 || h === 0) return "12:" + m + " منتصف الليل";
+    var suf = h < 12 ? "ص" : "م";
+    var h12 = h % 12 || 12;
+    return h12 + ":" + m + " " + suf;
+  }
+  function toMin(t){ var p = t.split(":"); return (+p[0])*60 + (+p[1]); }
+
+  // يحسب الوقت بتوقيت السعودية بغض النظر عن توقيت الجهاز
+  function nowKSA(){
+    var d = new Date();
+    var utc = d.getTime() + d.getTimezoneOffset()*60000;
+    return new Date(utc + 3*3600000);
+  }
+
+  function isOpen(){
+    var n = nowKSA(), day = n.getDay(), mins = n.getHours()*60 + n.getMinutes();
+    var today = HOURS[day] || [];
+    for (var i=0;i<today.length;i++){
+      var s = toMin(today[i][0]), e = toMin(today[i][1]);
+      if (e <= s) { if (mins >= s) return true; } // فترة تتجاوز منتصف الليل
+      else if (mins >= s && mins < e) return true;
+    }
+    var prev = HOURS[(day+6)%7] || [];
+    for (var j=0;j<prev.length;j++){
+      var s2 = toMin(prev[j][0]), e2 = toMin(prev[j][1]);
+      if (e2 <= s2 && mins < e2) return true;
+    }
+    return false;
+  }
+
+  function renderHours(){
+    var tbody = document.querySelector("#hoursTable tbody");
+    var todayIdx = nowKSA().getDay();
+    var html = "";
+    ORDER.forEach(function(d){
+      var val;
+      if (!HOURS) val = '<span class="ph">[أوقات الدوام - تُعبأ لاحقاً]</span>';
+      else if (!HOURS[d] || !HOURS[d].length) val = "مغلق";
+      else val = HOURS[d].map(fmtRange).join("<br>");
+      html += '<tr' + (d === todayIdx ? ' class="today"' : '') + '><td>' + DAYS[d] + (d === todayIdx ? ' (اليوم)' : '') + '</td><td>' + val + '</td></tr>';
+    });
+    tbody.innerHTML = html;
+
+    if (HOURS){
+      var t = HOURS[todayIdx];
+      var allFull = [0,1,2,3,4,5,6].every(function(d){ return HOURS[d] && HOURS[d].length === 1 && isFull(HOURS[d][0]); });
+      document.getElementById("badgeHours").textContent = allFull ? "مفتوحين 24 ساعة" :
+        (t && t.length) ? "اليوم: " + t.map(fmtRange).join(" و ") : "اليوم: مغلق";
+      if (!isOpen()) document.getElementById("closedBar").classList.add("show");
+    }
+  }
+
+  /* ===== النموذج ===== */
+  var $ = function(id){ return document.getElementById(id); };
+  var nameEl = $("name"), areaEl = $("area"), addrEl = $("address"),
+      itemsEl = $("items"), notesEl = $("notes"), sendBtn = $("sendBtn"),
+      formErr = $("formError");
+  var payment = "";
+  var tried = false;
+
+  // تعبئة البيانات المحفوظة
+  try {
+    var saved = JSON.parse(localStorage.getItem("ibtisama_customer") || "{}");
+    if (saved.name) nameEl.value = saved.name;
+    if (saved.address) addrEl.value = saved.address;
+    if (saved.area && [].some.call(areaEl.options, function(o){ return o.value === saved.area; })) areaEl.value = saved.area;
+  } catch(e) {}
+
+  function saveCustomer(){
+    try {
+      localStorage.setItem("ibtisama_customer", JSON.stringify({
+        name: nameEl.value.trim(), area: areaEl.value, address: addrEl.value.trim()
+      }));
+    } catch(e) {}
+  }
+
+  function getItems(){
+    return itemsEl.value.split(/\r?\n/)
+      .map(function(l){ return l.replace(/^[\s•\-–*·]+/, "").trim(); })
+      .filter(function(l){ return l.length; });
+  }
+
+  function buildMessage(){
+    var lines = ["🛒 طلب جديد - " + STORE_NAME, ""];
+    var n = nameEl.value.trim(), a = areaEl.value, ad = addrEl.value.trim(), no = notesEl.value.trim();
+    if (n) lines.push("الاسم: " + n);
+    if (a) lines.push("الحي: " + a);
+    if (ad) lines.push("العنوان: " + ad);
+    lines.push("", "الطلب:");
+    getItems().forEach(function(i){ lines.push("• " + i); });
+    var tail = [];
+    if (payment) tail.push("الدفع: " + payment);
+    if (no) tail.push("ملاحظات: " + no.replace(/\s*\r?\n\s*/g, " - "));
+    if (tail.length){ lines.push(""); lines = lines.concat(tail); }
+    lines.push("", "📍 بأرسل موقعي بعد هذه الرسالة.");
+    return lines.join("\n");
+  }
+
+  function update(){
+    sendBtn.href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(buildMessage());
+    if (tried) validate(false);
+  }
+
+  function setErr(el, errId, bad){
+    el.classList.toggle("invalid", bad);
+    el.setAttribute("aria-invalid", bad ? "true" : "false");
+    $(errId).classList.toggle("show", bad);
+  }
+
+  function validate(focus){
+    var areaBad = !areaEl.value, itemsBad = getItems().length === 0;
+    setErr(areaEl, "areaErr", areaBad);
+    setErr(itemsEl, "itemsErr", itemsBad);
+    var msgs = [];
+    if (areaBad) msgs.push("اختر الحي");
+    if (itemsBad) msgs.push("اكتب طلبك");
+    if (msgs.length){
+      formErr.textContent = "باقي شي بسيط قبل الإرسال: " + msgs.join(" و ");
+      formErr.classList.add("show");
+      if (focus){
+        var target = areaBad ? areaEl : itemsEl;
+        target.scrollIntoView({behavior:"smooth", block:"center"});
+        setTimeout(function(){ target.focus({preventScroll:true}); }, 250);
+      }
+      return false;
+    }
+    formErr.classList.remove("show");
+    return true;
+  }
+
+  sendBtn.addEventListener("click", function(e){
+    tried = true;
+    update();
+    if (!validate(true)) { e.preventDefault(); return; }
+    saveCustomer();
+  });
+
+  [nameEl, areaEl, addrEl, itemsEl, notesEl].forEach(function(el){
+    el.addEventListener("input", update);
+    el.addEventListener("change", update);
+  });
+  [nameEl, areaEl, addrEl].forEach(function(el){ el.addEventListener("change", saveCustomer); });
+
+  // الأصناف السريعة
+  $("chips").addEventListener("click", function(e){
+    var b = e.target.closest(".chip"); if (!b) return;
+    var v = itemsEl.value.replace(/\s+$/, "");
+    itemsEl.value = (v ? v + "\n" : "") + b.textContent.trim() + " ";
+    itemsEl.focus();
+    var len = itemsEl.value.length;
+    try { itemsEl.setSelectionRange(len, len); } catch(err) {}
+    update();
+  });
+
+  // طريقة الدفع
+  var payBtns = document.querySelectorAll("#pay button");
+  [].forEach.call(payBtns, function(b){
+    b.addEventListener("click", function(){
+      var on = b.getAttribute("aria-pressed") !== "true";
+      [].forEach.call(payBtns, function(x){ x.setAttribute("aria-pressed", "false"); });
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      payment = on ? b.getAttribute("data-v") : "";
+      update();
+    });
+  });
+
+  renderHours();
+  update();
+})();
+</script>
+</body>
+</html>
