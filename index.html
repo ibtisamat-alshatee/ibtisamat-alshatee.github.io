@@ -6,6 +6,8 @@
 <title>ابتسامة الشاطئ | بقالة حيّك في صبيا</title>
 <meta name="description" content="اكتب طلبك من بقالة ابتسامة الشاطئ في صبيا ونوصله لباب بيتك. توصيل للحشيبرية والجمالة، ومجاني فوق 50 ريال.">
 <meta name="theme-color" content="#0b6e79">
+<link rel="icon" type="image/png" href="images/icon-192.png">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -138,6 +140,15 @@
     .pay{grid-template-columns:1fr}
     .fee .amount{font-size:1.6rem}
   }
+  .logo-card{display:none;background:#fff;border-radius:24px;padding:10px 18px;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+  .logo-card img{display:block;width:210px;height:auto}
+  .has-logo .logo-card{display:inline-block}
+  .has-logo .brand-default{display:none!important}
+  .brand-only-tag{display:none;margin:-14px 0 22px;font-weight:700;opacity:.95}
+  .has-logo .brand-only-tag{display:block}
+  footer .logo-card{padding:8px 14px;border-radius:18px;margin-bottom:10px}
+  footer .logo-card img{width:150px}
+  @media (min-width:720px){.hero .logo-card img{width:250px}}
   #announce{display:none;background:var(--sea-dark);color:var(--white);text-align:center;font-weight:700;padding:10px 16px;font-size:1rem}
   #announce.show{display:block}
   .fees.one{grid-template-columns:1fr}
@@ -160,18 +171,20 @@
 <header class="hero">
   <div class="wrap">
     <div class="brand">
-      <div class="logo" aria-hidden="true">
+      <div class="logo-card"><img class="js-logo" src="" alt="" width="210" height="185"></div>
+      <div class="logo brand-default" aria-hidden="true">
         <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
           <circle cx="24" cy="18" r="8" fill="#f2a541"/>
           <path d="M4 32c5-4 9-4 14 0s9 4 14 0 9-4 12-1" stroke="#0b6e79" stroke-width="3.5" stroke-linecap="round"/>
           <path d="M15 38c3 3 6 4 9 4s6-1 9-4" stroke="#0b6e79" stroke-width="3.5" stroke-linecap="round"/>
         </svg>
       </div>
-      <div>
+      <div class="brand-default">
         <div class="brand-name js-name"></div>
         <div class="brand-tag js-tagline"></div>
       </div>
     </div>
+    <p class="brand-only-tag js-tagline"></p>
     <h1 id="heroTitle"></h1>
     <p class="lead" id="heroText"></p>
     <a href="#order" class="btn btn-sun">اطلب الآن
@@ -313,6 +326,7 @@
 <!-- 8. التذييل -->
 <footer>
   <div class="wrap">
+    <div class="logo-card"><img class="js-logo" src="" alt="" width="150" height="132" loading="lazy"></div>
     <div class="fname js-name"></div>
     <p class="js-tagline"></p>
     <a class="phone" id="footerPhone" href="#" rel="noopener"></a>
@@ -327,7 +341,7 @@
   "use strict";
 
   /* البيانات الافتراضية. المحتوى الفعلي يُقرأ من data.json (يتعدّل من لوحة التحكم admin.html) */
-  var DEFAULTS = {"storeName": "ابتسامة الشاطئ", "tagline": "بقالة حيّك في صبيا", "heroTitle": "اكتب طلبك، ونوصله لباب بيتك", "heroText": "بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة", "announcement": "", "whatsapp": "966505791265", "address": "حي الحشيبرية، صبيا", "mapsUrl": "https://maps.app.goo.gl/xUge2H9bAkNqRFKF7", "areas": ["الحشيبرية", "الجمالة"], "freeDeliveryMin": 50, "deliveryFee": 5.75, "payments": ["تحويل بنكي", "شبكة عند الاستلام", "كاش عند الاستلام"], "quickItems": ["رز", "دجاج", "زيت", "سكر", "حليب", "بيض", "خبز", "ماء", "شاي", "مناديل"], "hours": [{"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}], "offers": {"enabled": false, "items": []}, "photos": [{"src": "", "label": "صورة واجهة المحل"}, {"src": "", "label": "صورة من داخل المحل"}, {"src": "", "label": "صورة طلب مجهّز"}]};
+  var DEFAULTS = {"storeName": "ابتسامة الشاطئ", "logo": "images/logo.webp", "tagline": "بقالة حيّك في صبيا", "heroTitle": "اكتب طلبك، ونوصله لباب بيتك", "heroText": "بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة", "announcement": "", "whatsapp": "966505791265", "address": "حي الحشيبرية، صبيا", "mapsUrl": "https://maps.app.goo.gl/xUge2H9bAkNqRFKF7", "areas": ["الحشيبرية", "الجمالة"], "freeDeliveryMin": 50, "deliveryFee": 5.75, "payments": ["تحويل بنكي", "شبكة عند الاستلام", "كاش عند الاستلام"], "quickItems": ["رز", "دجاج", "زيت", "سكر", "حليب", "بيض", "خبز", "ماء", "شاي", "مناديل"], "hours": [{"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}], "offers": {"enabled": false, "items": []}, "photos": [{"src": "images/front.jpg", "label": "واجهة المحل"}, {"src": "images/inside.jpg", "label": "من داخل المحل"}, {"src": "images/fresh.jpg", "label": "خضار وفواكه طازجة"}]};
   var D = DEFAULTS;
 
   var DAYS = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
@@ -404,6 +418,9 @@
     all(".js-name").forEach(function(el){ el.textContent = name; });
     all(".js-tagline").forEach(function(el){ el.textContent = D.tagline || ""; });
     all(".js-address").forEach(function(el){ el.textContent = D.address || ""; });
+    var logo = safeSrc(D.logo);
+    document.body.classList.toggle("has-logo", !!logo);
+    all(".js-logo").forEach(function(el){ if (logo) { el.src = logo; el.alt = name; } else el.removeAttribute("src"); });
     all(".js-map").forEach(function(el){ el.href = safeUrl(D.mapsUrl); });
     $("heroTitle").textContent = D.heroTitle || "";
     $("heroText").textContent = D.heroText || "";

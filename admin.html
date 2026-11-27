@@ -105,6 +105,12 @@
     </section>
 
     <section class="card">
+      <h2>اللوجو</h2>
+      <p class="hint">يظهر أعلى الموقع وفي التذييل. الأفضل صورة PNG بخلفية شفافة.</p>
+      <div class="photo" id="logoBox"></div>
+    </section>
+
+    <section class="card">
       <h2>بيانات المحل</h2>
       <label for="f_storeName">اسم البقالة</label>
       <input type="text" id="f_storeName">
@@ -306,7 +312,7 @@
     data.offers = data.offers || {enabled: false, items: []};
     data.offers.items = data.offers.items || [];
     data.photos = data.photos || [];
-    renderHours(); renderOffers(); renderPhotos();
+    renderHours(); renderOffers(); renderPhotos(); renderLogo();
     dirty = false;
   }
 
@@ -416,7 +422,34 @@
     }).catch(function(err){ msg(err.status ? friendlyError(err) : "ما قدرنا نقرأ الصورة. جرّب صورة ثانية.", "err"); });
   });
 
-  function resizeImage(file, max, quality){
+  /* اللوجو */
+  function renderLogo(){
+    $("logoBox").innerHTML =
+      (data.logo ? '<img src="' + esc(photoUrl(data.logo)) + '" alt="" style="object-fit:contain;background:#fff">' : '<div class="empty">[ما فيه لوجو]</div>') +
+      '<div class="photo-actions">' +
+        '<span class="btn light small file-btn">🖼️ ' + (data.logo ? "تغيير اللوجو" : "اختيار لوجو") +
+          '<input type="file" accept="image/*" aria-label="اختيار لوجو"></span>' +
+        (data.logo ? '<button type="button" class="btn danger small" id="rmLogo">حذف</button>' : "") +
+      '</div>';
+  }
+  $("logoBox").addEventListener("click", function(e){
+    if (e.target.id !== "rmLogo") return;
+    data.logo = ""; renderLogo(); dirty = true;
+  });
+  $("logoBox").addEventListener("change", function(e){
+    if (e.target.type !== "file" || !e.target.files[0]) return;
+    msg("جاري رفع اللوجو...", "info");
+    resizeImage(e.target.files[0], 640, 0, true).then(function(b64){
+      var path = "images/logo-" + Date.now() + ".png";
+      return gh("/contents/" + path, {method: "PUT", body: {message: "رفع لوجو من لوحة التحكم", content: b64, branch: BRANCH}})
+        .then(function(){ return path; });
+    }).then(function(path){
+      data.logo = path; dirty = true; renderLogo();
+      msg("تم رفع اللوجو ✅ لا تنسى تضغط «حفظ التعديلات» تحت.", "ok");
+    }).catch(function(err){ msg(err.status ? friendlyError(err) : "ما قدرنا نقرأ الصورة. جرّب صورة ثانية.", "err"); });
+  });
+
+  function resizeImage(file, max, quality, png){
     return new Promise(function(resolve, reject){
       var url = URL.createObjectURL(file), img = new Image();
       img.onload = function(){
@@ -424,10 +457,10 @@
         var c = document.createElement("canvas");
         c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
         var ctx = c.getContext("2d");
-        ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+        if (!png) { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height); }
         ctx.drawImage(img, 0, 0, c.width, c.height);
         URL.revokeObjectURL(url);
-        resolve(c.toDataURL("image/jpeg", quality).split(",")[1]);
+        resolve((png ? c.toDataURL("image/png") : c.toDataURL("image/jpeg", quality)).split(",")[1]);
       };
       img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error("bad image")); };
       img.src = url;
