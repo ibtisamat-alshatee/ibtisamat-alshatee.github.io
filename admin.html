@@ -47,6 +47,10 @@
   .offer{border:2px dashed var(--sand-dark);border-radius:12px;padding:12px;margin-bottom:10px}
   .offer img.thumb{width:100%;max-height:200px;object-fit:cover;border-radius:10px;display:block;margin-bottom:8px}
   .offer .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .pick{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:3px dashed var(--sea);background:var(--sea-soft);color:var(--sea-dark);border-radius:12px;min-height:130px;font-weight:800;font-size:1.05rem;text-align:center;cursor:pointer;margin-bottom:6px}
+  .pick .pick-ic{font-size:2rem;line-height:1}
+  .pick small{font-weight:500;color:var(--muted)}
+  .version{text-align:center;color:var(--muted);font-size:.8rem;margin-top:8px}
   .expired{background:var(--error-bg);color:var(--error);border-radius:8px;padding:4px 10px;font-size:.88rem;font-weight:700;display:inline-block;margin-bottom:6px}
   .photos{display:grid;gap:12px}
   .photo{border:2px dashed var(--sea);border-radius:12px;padding:12px}
@@ -192,6 +196,8 @@
     </section>
   </div>
 </div>
+
+<p class="version">نسخة اللوحة: 3</p>
 
 <div class="savebar hidden" id="savebar">
   <div class="inner">
@@ -380,14 +386,18 @@
     var d = new Date(Date.now() + (new Date().getTimezoneOffset() + 180) * 60000);
     return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
   }
-  function imgBlock(src, i){
-    return (src ? '<img class="thumb" src="' + esc(photoUrl(src)) + '" alt="">' : "") +
-      '<div class="acts">' +
-        '<span class="btn light small file-btn">📷 ' + (src ? "تغيير الصورة" : "إضافة صورة") +
-          '<input type="file" accept="image/*" data-img="' + i + '" aria-label="صورة"></span>' +
-        (src ? '<button type="button" class="btn light small" data-rmimg="' + i + '">حذف الصورة</button>' : "") +
-        '<button type="button" class="btn danger small" data-del="' + i + '">حذف</button>' +
-      '</div>';
+  /* مربع الصورة: يطلع أعلى كل عرض أو خبر */
+  function imgPicker(src, i){
+    var input = '<input type="file" accept="image/*" data-img="' + i + '" aria-label="صورة">';
+    if (!src) return '<div class="pick file-btn"><span class="pick-ic">📷</span>اضغط هنا لإضافة صورة<small>(اختياري)</small>' + input + "</div>";
+    return '<img class="thumb" src="' + esc(photoUrl(src)) + '" alt="">' +
+      '<div class="acts" style="margin:0 0 6px">' +
+        '<span class="btn light small file-btn">📷 تغيير الصورة' + input + "</span>" +
+        '<button type="button" class="btn light small" data-rmimg="' + i + '">حذف الصورة</button>' +
+      "</div>";
+  }
+  function delBtn(i, what){
+    return '<div class="acts"><button type="button" class="btn danger small" data-del="' + i + '">🗑️ حذف ' + what + "</button></div>";
   }
   /* يربط قائمة (عروض أو أخبار) بأحداثها */
   function bindList(boxId, getList, rerender, prefix){
@@ -415,11 +425,12 @@
     $("offersBox").innerHTML = items.length ? items.map(function(o, i){
       return '<div class="offer" data-i="' + i + '">' +
         (o.until && o.until < today ? '<span class="expired">منتهي، ما يظهر في الموقع</span>' : "") +
+        imgPicker(o.image, i) +
         '<label>اسم العرض</label><input type="text" data-k="title" value="' + esc(o.title) + '" placeholder="مثلاً: رز بسمتي 10 كيلو">' +
         '<label>السعر</label><input type="text" data-k="price" value="' + esc(o.price) + '" placeholder="مثلاً: 45 ريال بدل 55">' +
         '<label>ملاحظة (اختياري)</label><input type="text" data-k="note" value="' + esc(o.note) + '" placeholder="مثلاً: الكمية محدودة">' +
         '<label>ينتهي العرض بعد يوم (اختياري)</label><input type="date" data-k="until" value="' + esc(o.until) + '">' +
-        imgBlock(o.image, i) + '</div>';
+        delBtn(i, "العرض") + '</div>';
     }).join("") : '<p class="hint">ما فيه عروض حالياً.</p>';
   }
   bindList("offersBox", function(){ return data.offers.items; }, renderOffers, "offer");
@@ -436,10 +447,11 @@
     var items = data.news;
     $("newsBox").innerHTML = items.length ? items.map(function(n, i){
       return '<div class="offer" data-i="' + i + '">' +
+        imgPicker(n.image, i) +
         '<label>عنوان الخبر</label><input type="text" data-k="title" value="' + esc(n.title) + '" placeholder="مثلاً: وصلتنا تمور الموسم 🌴">' +
         '<label>التفاصيل (اختياري)</label><textarea data-k="text" style="min-height:80px" placeholder="اكتب الخبر هنا">' + esc(n.text) + '</textarea>' +
         '<label>التاريخ</label><input type="date" data-k="date" value="' + esc(n.date) + '">' +
-        imgBlock(n.image, i) + '</div>';
+        delBtn(i, "الخبر") + '</div>';
     }).join("") : '<p class="hint">ما فيه أخبار حالياً.</p>';
   }
   bindList("newsBox", function(){ return data.news; }, renderNews, "news");
