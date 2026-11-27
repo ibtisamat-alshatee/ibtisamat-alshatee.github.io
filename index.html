@@ -156,7 +156,15 @@
   .photo.has-img{border-style:solid;padding:0;overflow:hidden}
   .photo.has-img img{border-radius:0}
   .offers{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
-  .offer{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px;text-align:center;border-top:6px solid var(--sun)}
+  .offer{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px;text-align:center;border-top:6px solid var(--sun);overflow:hidden}
+  .offer img,.news-item img{display:block;width:calc(100% + 32px);margin:-20px -16px 14px;aspect-ratio:4/3;object-fit:cover}
+  .offer .until{display:inline-block;margin-top:8px;background:#fff6e6;color:#9a6a1f;border-radius:999px;padding:2px 12px;font-size:.85rem;font-weight:700}
+  .news{display:grid;gap:14px}
+  .news-item{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px;overflow:hidden;border-right:6px solid var(--sea)}
+  .news-item time{display:block;color:var(--muted);font-size:.88rem;font-weight:700}
+  .news-item h3{font-size:1.2rem;font-weight:800;color:var(--sea-dark);margin:2px 0 6px}
+  .news-item p{color:var(--ink);white-space:pre-line}
+  @media (min-width:720px){.news{grid-template-columns:repeat(2,1fr)}}
   .offer h3{font-size:1.2rem;font-weight:800;color:var(--sea-dark)}
   .offer .price{font-size:1.6rem;font-weight:800;color:var(--sun-dark)}
   .offer p{color:var(--muted);font-size:.95rem}
@@ -300,6 +308,15 @@
   </div>
 </section>
 
+<!-- الأخبار -->
+<section id="news" style="display:none">
+  <div class="wrap">
+    <h2>آخر الأخبار</h2>
+    <p class="sub">جديدنا في المحل</p>
+    <div class="news" id="newsBox"></div>
+  </div>
+</section>
+
 <!-- 7. تعرّف علينا -->
 <section id="about">
   <div class="wrap">
@@ -341,7 +358,7 @@
   "use strict";
 
   /* البيانات الافتراضية. المحتوى الفعلي يُقرأ من data.json (يتعدّل من لوحة التحكم admin.html) */
-  var DEFAULTS = {"storeName": "ابتسامة الشاطئ", "logo": "images/logo.webp", "tagline": "بقالة حيّك في صبيا", "heroTitle": "اكتب طلبك، ونوصله لباب بيتك", "heroText": "بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة", "announcement": "", "whatsapp": "966505791265", "address": "حي الحشيبرية، صبيا", "mapsUrl": "https://maps.app.goo.gl/xUge2H9bAkNqRFKF7", "areas": ["الحشيبرية", "الجمالة"], "freeDeliveryMin": 50, "deliveryFee": 5.75, "payments": ["تحويل بنكي", "شبكة عند الاستلام", "كاش عند الاستلام"], "quickItems": ["رز", "دجاج", "زيت", "سكر", "حليب", "بيض", "خبز", "ماء", "شاي", "مناديل"], "hours": [{"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}], "offers": {"enabled": false, "items": []}, "photos": [{"src": "images/front.jpg", "label": "واجهة المحل"}, {"src": "images/inside.jpg", "label": "من داخل المحل"}, {"src": "images/fresh.jpg", "label": "خضار وفواكه طازجة"}]};
+  var DEFAULTS = {"storeName": "ابتسامة الشاطئ", "logo": "images/logo.webp", "tagline": "بقالة حيّك في صبيا", "heroTitle": "اكتب طلبك، ونوصله لباب بيتك", "heroText": "بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة", "announcement": "", "whatsapp": "966505791265", "address": "حي الحشيبرية، صبيا", "mapsUrl": "https://maps.app.goo.gl/xUge2H9bAkNqRFKF7", "areas": ["الحشيبرية", "الجمالة"], "freeDeliveryMin": 50, "deliveryFee": 5.75, "payments": ["تحويل بنكي", "شبكة عند الاستلام", "كاش عند الاستلام"], "quickItems": ["رز", "دجاج", "زيت", "سكر", "حليب", "بيض", "خبز", "ماء", "شاي", "مناديل"], "hours": [{"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}], "offers": {"enabled": false, "items": []}, "photos": [{"src": "images/front.jpg", "label": "واجهة المحل"}, {"src": "images/inside.jpg", "label": "من داخل المحل"}, {"src": "images/fresh.jpg", "label": "خضار وفواكه طازجة"}], "news": []};
   var D = DEFAULTS;
 
   var DAYS = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
@@ -397,6 +414,15 @@
       var s = toMin(r[0]), e = toMin(r[1]);
       return e <= s && mins < e;
     });
+  }
+  function todayKSA(){
+    var n = nowKSA();
+    return n.getFullYear() + "-" + ("0" + (n.getMonth() + 1)).slice(-2) + "-" + ("0" + n.getDate()).slice(-2);
+  }
+  var MONTHS = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  function fmtDate(iso){
+    var p = String(iso).split("-");
+    return p.length === 3 ? (+p[2]) + " " + MONTHS[(+p[1]) - 1] + " " + p[0] : iso;
   }
   function always24(){
     return [0,1,2,3,4,5,6].every(function(d){ var r = ranges(d); return r.length === 1 && isFull(r[0]); });
@@ -488,14 +514,34 @@
     $("closedBar").classList.toggle("show", !isOpen());
 
     // العروض
-    var offers = (D.offers && D.offers.enabled) ? (D.offers.items || []).filter(function(o){ return o && o.title; }) : [];
+    var today = todayKSA();
+    var offers = (D.offers && D.offers.enabled) ? (D.offers.items || []).filter(function(o){
+      return o && o.title && !(o.until && o.until < today);
+    }) : [];
     $("offersBox").innerHTML = offers.length
       ? '<div class="offers">' + offers.map(function(o){
-          return '<div class="offer"><h3>' + esc(o.title) + "</h3>" +
+          var img = safeSrc(o.image);
+          return '<div class="offer">' +
+            (img ? '<img src="' + esc(img) + '" alt="' + esc(o.title) + '" loading="lazy">' : "") +
+            "<h3>" + esc(o.title) + "</h3>" +
             (o.price ? '<div class="price">' + esc(o.price) + "</div>" : "") +
-            (o.note ? "<p>" + esc(o.note) + "</p>" : "") + "</div>";
+            (o.note ? "<p>" + esc(o.note) + "</p>" : "") +
+            (o.until ? '<span class="until">ينتهي ' + esc(fmtDate(o.until)) + "</span>" : "") + "</div>";
         }).join("") + "</div>"
       : '<div class="soon"><div style="font-size:2.4rem" aria-hidden="true">🏷️</div><strong>عروض الأسبوع قريباً</strong><p class="muted">ترقبونا، بننزل عروض حلوة على أغراض البيت</p></div>';
+
+    // الأخبار
+    var news = (D.news || []).filter(function(n){ return n && n.title; })
+      .sort(function(a, b){ return (b.date || "").localeCompare(a.date || ""); });
+    $("news").style.display = news.length ? "" : "none";
+    $("newsBox").innerHTML = news.map(function(n){
+      var img = safeSrc(n.image);
+      return '<article class="news-item">' +
+        (img ? '<img src="' + esc(img) + '" alt="' + esc(n.title) + '" loading="lazy">' : "") +
+        (n.date ? '<time datetime="' + esc(n.date) + '">' + esc(fmtDate(n.date)) + "</time>" : "") +
+        "<h3>" + esc(n.title) + "</h3>" +
+        (n.text ? "<p>" + esc(n.text) + "</p>" : "") + "</article>";
+    }).join("");
 
     // الصور
     $("photos").innerHTML = (D.photos || []).map(function(p){

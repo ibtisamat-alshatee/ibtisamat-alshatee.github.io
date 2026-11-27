@@ -27,7 +27,7 @@
   .hint{color:var(--muted);font-size:.92rem;margin-bottom:10px}
   label{display:block;font-weight:700;margin:12px 0 6px}
   label:first-of-type{margin-top:0}
-  input[type=text],input[type=number],input[type=password],input[type=time],input[type=url],select,textarea{width:100%;font-family:inherit;font-size:1.05rem;color:var(--ink);background:#fbfaf6;border:2px solid var(--sand-dark);border-radius:12px;padding:11px 12px;min-height:50px}
+  input[type=text],input[type=number],input[type=password],input[type=time],input[type=date],input[type=url],select,textarea{width:100%;font-family:inherit;font-size:1.05rem;color:var(--ink);background:#fbfaf6;border:2px solid var(--sand-dark);border-radius:12px;padding:11px 12px;min-height:50px}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--sea);background:#fff}
   textarea{resize:vertical;min-height:110px}
   .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -45,6 +45,9 @@
   .switch{display:flex;align-items:center;gap:10px;font-weight:700;margin-bottom:10px}
   .switch input{width:24px;height:24px;accent-color:var(--sea)}
   .offer{border:2px dashed var(--sand-dark);border-radius:12px;padding:12px;margin-bottom:10px}
+  .offer img.thumb{width:100%;max-height:200px;object-fit:cover;border-radius:10px;display:block;margin-bottom:8px}
+  .offer .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .expired{background:var(--error-bg);color:var(--error);border-radius:8px;padding:4px 10px;font-size:.88rem;font-weight:700;display:inline-block;margin-bottom:6px}
   .photos{display:grid;gap:12px}
   .photo{border:2px dashed var(--sea);border-radius:12px;padding:12px}
   .photo img{width:100%;max-height:220px;object-fit:cover;border-radius:10px;display:block;margin-bottom:8px}
@@ -170,9 +173,16 @@
     <section class="card">
       <h2>العروض</h2>
       <label class="switch"><input type="checkbox" id="f_offersEnabled"> إظهار العروض في الموقع</label>
-      <p class="hint">إذا طفّيتها أو ما فيه عروض، يظهر «عروض الأسبوع قريباً».</p>
+      <p class="hint">إذا طفّيتها أو ما فيه عروض، يظهر «عروض الأسبوع قريباً». العرض اللي له تاريخ انتهاء يختفي تلقائياً بعد ذاك اليوم.</p>
       <div id="offersBox"></div>
       <button type="button" class="btn light" id="addOffer" style="width:100%">+ إضافة عرض</button>
+    </section>
+
+    <section class="card">
+      <h2>الأخبار الجديدة</h2>
+      <p class="hint">مثل: «وصلتنا تمور الموسم» أو «افتتحنا قسم المخبوزات». أحدث خبر يطلع أول. إذا ما فيه أخبار، القسم ما يظهر في الموقع.</p>
+      <button type="button" class="btn light" id="addNews" style="width:100%;margin-bottom:12px">+ إضافة خبر</button>
+      <div id="newsBox"></div>
     </section>
 
     <section class="card">
@@ -312,7 +322,8 @@
     data.offers = data.offers || {enabled: false, items: []};
     data.offers.items = data.offers.items || [];
     data.photos = data.photos || [];
-    renderHours(); renderOffers(); renderPhotos(); renderLogo();
+    data.news = data.news || [];
+    renderHours(); renderOffers(); renderNews(); renderPhotos(); renderLogo();
     dirty = false;
   }
 
@@ -353,32 +364,90 @@
     renderHours(); dirty = true;
   });
 
+  /* رفع صورة عامة */
+  function uploadImage(file, prefix){
+    msg("جاري رفع الصورة...", "info");
+    return resizeImage(file, 1200, 0.82).then(function(b64){
+      var path = "images/" + prefix + "-" + Date.now() + ".jpg";
+      return gh("/contents/" + path, {method: "PUT", body: {message: "رفع صورة من لوحة التحكم", content: b64, branch: BRANCH}})
+        .then(function(){ msg("تم رفع الصورة ✅ لا تنسى تضغط «حفظ التعديلات» تحت.", "ok"); return path; });
+    }).catch(function(err){
+      msg(err.status ? friendlyError(err) : "ما قدرنا نقرأ الصورة. جرّب صورة ثانية.", "err");
+      throw err;
+    });
+  }
+  function todayStr(){
+    var d = new Date(Date.now() + (new Date().getTimezoneOffset() + 180) * 60000);
+    return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  }
+  function imgBlock(src, i){
+    return (src ? '<img class="thumb" src="' + esc(photoUrl(src)) + '" alt="">' : "") +
+      '<div class="acts">' +
+        '<span class="btn light small file-btn">📷 ' + (src ? "تغيير الصورة" : "إضافة صورة") +
+          '<input type="file" accept="image/*" data-img="' + i + '" aria-label="صورة"></span>' +
+        (src ? '<button type="button" class="btn light small" data-rmimg="' + i + '">حذف الصورة</button>' : "") +
+        '<button type="button" class="btn danger small" data-del="' + i + '">حذف</button>' +
+      '</div>';
+  }
+  /* يربط قائمة (عروض أو أخبار) بأحداثها */
+  function bindList(boxId, getList, rerender, prefix){
+    var box = $(boxId);
+    box.addEventListener("input", function(e){
+      var it = e.target.closest(".offer"), k = e.target.getAttribute("data-k"); if (!it || !k) return;
+      getList()[+it.getAttribute("data-i")][k] = e.target.value; dirty = true;
+    });
+    box.addEventListener("click", function(e){
+      var d = e.target.getAttribute("data-del"), r = e.target.getAttribute("data-rmimg");
+      if (d != null) {
+        if (!confirm("متأكد تبي تحذفه؟")) return;
+        getList().splice(+d, 1); rerender(); dirty = true;
+      } else if (r != null) { getList()[+r].image = ""; rerender(); dirty = true; }
+    });
+    box.addEventListener("change", function(e){
+      var i = e.target.getAttribute("data-img"); if (i == null || !e.target.files[0]) return;
+      uploadImage(e.target.files[0], prefix).then(function(path){ getList()[+i].image = path; dirty = true; rerender(); }).catch(function(){});
+    });
+  }
+
   /* العروض */
   function renderOffers(){
-    var items = data.offers.items;
+    var items = data.offers.items, today = todayStr();
     $("offersBox").innerHTML = items.length ? items.map(function(o, i){
       return '<div class="offer" data-i="' + i + '">' +
+        (o.until && o.until < today ? '<span class="expired">منتهي، ما يظهر في الموقع</span>' : "") +
         '<label>اسم العرض</label><input type="text" data-k="title" value="' + esc(o.title) + '" placeholder="مثلاً: رز بسمتي 10 كيلو">' +
         '<label>السعر</label><input type="text" data-k="price" value="' + esc(o.price) + '" placeholder="مثلاً: 45 ريال بدل 55">' +
-        '<label>ملاحظة (اختياري)</label><input type="text" data-k="note" value="' + esc(o.note) + '" placeholder="مثلاً: لين نهاية الأسبوع">' +
-        '<button type="button" class="btn danger small" data-del="' + i + '" style="margin-top:10px">حذف العرض</button></div>';
+        '<label>ملاحظة (اختياري)</label><input type="text" data-k="note" value="' + esc(o.note) + '" placeholder="مثلاً: الكمية محدودة">' +
+        '<label>ينتهي العرض بعد يوم (اختياري)</label><input type="date" data-k="until" value="' + esc(o.until) + '">' +
+        imgBlock(o.image, i) + '</div>';
     }).join("") : '<p class="hint">ما فيه عروض حالياً.</p>';
   }
-  $("offersBox").addEventListener("input", function(e){
-    var box = e.target.closest(".offer"); if (!box) return;
-    data.offers.items[+box.getAttribute("data-i")][e.target.getAttribute("data-k")] = e.target.value;
-    dirty = true;
-  });
-  $("offersBox").addEventListener("click", function(e){
-    var i = e.target.getAttribute("data-del"); if (i == null) return;
-    data.offers.items.splice(+i, 1); renderOffers(); dirty = true;
-  });
+  bindList("offersBox", function(){ return data.offers.items; }, renderOffers, "offer");
   $("addOffer").addEventListener("click", function(){
-    data.offers.items.push({title: "", price: "", note: ""});
+    data.offers.items.push({title: "", price: "", note: "", until: "", image: ""});
     $("f_offersEnabled").checked = true;
     renderOffers(); dirty = true;
     var inputs = $("offersBox").querySelectorAll(".offer:last-child input");
     if (inputs[0]) inputs[0].focus();
+  });
+
+  /* الأخبار */
+  function renderNews(){
+    var items = data.news;
+    $("newsBox").innerHTML = items.length ? items.map(function(n, i){
+      return '<div class="offer" data-i="' + i + '">' +
+        '<label>عنوان الخبر</label><input type="text" data-k="title" value="' + esc(n.title) + '" placeholder="مثلاً: وصلتنا تمور الموسم 🌴">' +
+        '<label>التفاصيل (اختياري)</label><textarea data-k="text" style="min-height:80px" placeholder="اكتب الخبر هنا">' + esc(n.text) + '</textarea>' +
+        '<label>التاريخ</label><input type="date" data-k="date" value="' + esc(n.date) + '">' +
+        imgBlock(n.image, i) + '</div>';
+    }).join("") : '<p class="hint">ما فيه أخبار حالياً.</p>';
+  }
+  bindList("newsBox", function(){ return data.news; }, renderNews, "news");
+  $("addNews").addEventListener("click", function(){
+    data.news.unshift({title: "", text: "", date: todayStr(), image: ""});
+    renderNews(); dirty = true;
+    var first = $("newsBox").querySelector(".offer input");
+    if (first) first.focus();
   });
 
   /* الصور */
@@ -484,7 +553,10 @@
     out.deliveryFee = Math.max(0, parseFloat($("f_deliveryFee").value) || 0);
     out.offers.enabled = $("f_offersEnabled").checked;
     out.offers.items = out.offers.items.filter(function(o){ return (o.title || "").trim(); })
-      .map(function(o){ return {title: o.title.trim(), price: (o.price || "").trim(), note: (o.note || "").trim()}; });
+      .map(function(o){ return {title: o.title.trim(), price: (o.price || "").trim(), note: (o.note || "").trim(), until: o.until || "", image: o.image || ""}; });
+    out.news = (out.news || []).filter(function(n){ return (n.title || "").trim(); })
+      .map(function(n){ return {title: n.title.trim(), text: (n.text || "").trim(), date: n.date || "", image: n.image || ""}; })
+      .sort(function(a, b){ return (b.date || "").localeCompare(a.date || ""); });
     out.hours = out.hours.map(function(h){
       if (h.mode !== "open") return {mode: h.mode};
       var r = {mode: "open", from: h.from || "", to: h.to || ""};
@@ -515,7 +587,7 @@
       content: b64encode(JSON.stringify(out, null, 2) + "\n"),
       sha: sha, branch: BRANCH
     }}).then(function(res){
-      sha = res.content.sha; data = out; dirty = false;
+      sha = res.content.sha; data = out; dirty = false; renderOffers(); renderNews();
       msg("تم الحفظ ✅ التعديلات تظهر في الموقع خلال دقيقة إلى دقيقتين.", "ok");
     }).catch(function(e){
       if ((e.status === 409 || e.status === 422) && !retry) {
