@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>لوحة التحكم | ابتسامة الشاطئ</title>
+<meta name="theme-color" content="#0b6e79">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sea:#0b6e79; --sea-dark:#08525a; --sea-soft:#e3f1f2;
+    --sand:#f6eddc; --sand-dark:#e8d9bb; --sun:#f2a541;
+    --wa:#1fa855; --ink:#1d2b2d; --muted:#5b6b6d; --white:#fff;
+    --error:#c0392b; --error-bg:#fdecea; --ok-bg:#e6f6ec;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Tajawal",system-ui,sans-serif;background:var(--sand);color:var(--ink);font-size:17px;line-height:1.6;padding-bottom:110px}
+  .top{background:var(--sea);color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:5}
+  .top h1{font-size:1.15rem;font-weight:800}
+  .top a,.top button{color:#fff;font-family:inherit;font-size:.95rem;font-weight:700;background:rgba(255,255,255,.15);border:0;border-radius:10px;padding:8px 12px;text-decoration:none;cursor:pointer}
+  .wrap{max-width:760px;margin:0 auto;padding:16px}
+  .card{background:#fff;border-radius:16px;padding:18px 16px;margin-bottom:16px;box-shadow:0 4px 14px rgba(11,110,121,.08)}
+  .card h2{font-size:1.2rem;font-weight:800;color:var(--sea-dark);margin-bottom:12px}
+  .hint{color:var(--muted);font-size:.92rem;margin-bottom:10px}
+  label{display:block;font-weight:700;margin:12px 0 6px}
+  label:first-of-type{margin-top:0}
+  input[type=text],input[type=number],input[type=password],input[type=time],input[type=url],select,textarea{width:100%;font-family:inherit;font-size:1.05rem;color:var(--ink);background:#fbfaf6;border:2px solid var(--sand-dark);border-radius:12px;padding:11px 12px;min-height:50px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--sea);background:#fff}
+  textarea{resize:vertical;min-height:110px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .btn{font-family:inherit;font-size:1.05rem;font-weight:800;border:0;border-radius:12px;padding:12px 18px;min-height:50px;cursor:pointer;background:var(--sea);color:#fff}
+  .btn.light{background:var(--sea-soft);color:var(--sea-dark)}
+  .btn.danger{background:var(--error-bg);color:var(--error)}
+  .btn.small{min-height:40px;padding:6px 12px;font-size:.95rem}
+  .btn:disabled{opacity:.6;cursor:wait}
+  .day{display:grid;grid-template-columns:90px 1fr;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--sand-dark)}
+  .day:last-child{border-bottom:0}
+  .day b{font-size:1rem}
+  .times{grid-column:1 / -1;display:none;gap:8px;grid-template-columns:1fr 1fr}
+  .times.show{display:grid}
+  .times span{font-size:.85rem;color:var(--muted);grid-column:1 / -1}
+  .switch{display:flex;align-items:center;gap:10px;font-weight:700;margin-bottom:10px}
+  .switch input{width:24px;height:24px;accent-color:var(--sea)}
+  .offer{border:2px dashed var(--sand-dark);border-radius:12px;padding:12px;margin-bottom:10px}
+  .photos{display:grid;gap:12px}
+  .photo{border:2px dashed var(--sea);border-radius:12px;padding:12px}
+  .photo img{width:100%;max-height:220px;object-fit:cover;border-radius:10px;display:block;margin-bottom:8px}
+  .photo .empty{background:var(--sea-soft);color:var(--sea-dark);border-radius:10px;padding:30px 10px;text-align:center;font-weight:700;margin-bottom:8px}
+  .photo-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .file-btn{position:relative;overflow:hidden}
+  .file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .savebar{position:fixed;bottom:0;left:0;right:0;background:#fff;box-shadow:0 -4px 16px rgba(0,0,0,.1);padding:12px 16px;z-index:5}
+  .savebar .inner{max-width:760px;margin:0 auto;display:flex;gap:10px;align-items:center}
+  .savebar .btn{flex:1;background:var(--wa);font-size:1.15rem;min-height:56px}
+  #msg{display:none;border-radius:12px;padding:12px 14px;font-weight:700;margin-bottom:16px}
+  #msg.ok{display:block;background:var(--ok-bg);color:#11643a}
+  #msg.err{display:block;background:var(--error-bg);color:var(--error)}
+  #msg.info{display:block;background:var(--sea-soft);color:var(--sea-dark)}
+  ol.steps{padding-right:22px;margin:8px 0 14px}
+  ol.steps li{margin-bottom:8px}
+  .hidden{display:none!important}
+  a.link{color:var(--sea);font-weight:700}
+  @media (min-width:640px){.photos{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>لوحة التحكم</h1>
+  <div style="display:flex;gap:8px">
+    <a href="./" target="_blank" rel="noopener">عرض الموقع</a>
+    <button type="button" id="logoutBtn" class="hidden">خروج</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="msg" role="status"></div>
+
+  <!-- تسجيل الدخول -->
+  <section id="login" class="card hidden">
+    <h2>الدخول للوحة التحكم</h2>
+    <p class="hint">تحتاج «مفتاح دخول» من GitHub مرة وحدة بس، ويبقى محفوظ على هذا الجهاز.</p>
+    <ol class="steps">
+      <li>افتح <a class="link" id="tokenLink" href="https://github.com/settings/tokens/new?scopes=public_repo&description=%D9%84%D9%88%D8%AD%D8%A9%20%D8%AA%D8%AD%D9%83%D9%85%20%D8%A7%D8%A8%D8%AA%D8%B3%D8%A7%D9%85%D8%A9%20%D8%A7%D9%84%D8%B4%D8%A7%D8%B7%D8%A6" target="_blank" rel="noopener">صفحة إنشاء المفتاح في GitHub</a> (وأنت مسجل دخول).</li>
+      <li>في <b>Expiration</b> اختر <b>No expiration</b> أو مدة طويلة.</li>
+      <li>تأكد إن <b>public_repo</b> عليه علامة ✓، وانزل تحت واضغط <b>Generate token</b>.</li>
+      <li>انسخ المفتاح (يبدأ بـ <code>ghp_</code>) والصقه هنا.</li>
+    </ol>
+    <label for="tokenInput">مفتاح الدخول</label>
+    <input type="password" id="tokenInput" autocomplete="off" dir="ltr" placeholder="ghp_...">
+    <p class="hint" style="margin-top:8px">لا ترسل هذا المفتاح لأي أحد. اللي معه المفتاح يقدر يعدّل الموقع.</p>
+    <button class="btn" id="loginBtn" type="button" style="width:100%;margin-top:6px">دخول</button>
+  </section>
+
+  <!-- المحرر -->
+  <div id="editor" class="hidden">
+
+    <section class="card">
+      <h2>إعلان أعلى الصفحة</h2>
+      <p class="hint">شريط يظهر فوق الموقع لأي خبر، مثل: «توصيل مجاني طول هذا الأسبوع». خلّه فاضي إذا ما تبي شريط.</p>
+      <input type="text" id="f_announcement" placeholder="مثلاً: وصلتنا تمور جديدة 🌴">
+    </section>
+
+    <section class="card">
+      <h2>بيانات المحل</h2>
+      <label for="f_storeName">اسم البقالة</label>
+      <input type="text" id="f_storeName">
+      <label for="f_tagline">الوصف تحت الاسم</label>
+      <input type="text" id="f_tagline">
+      <label for="f_heroTitle">العنوان الكبير</label>
+      <input type="text" id="f_heroTitle">
+      <label for="f_heroText">سطر الشرح</label>
+      <textarea id="f_heroText" style="min-height:80px"></textarea>
+      <label for="f_whatsapp">رقم واتساب الطلبات</label>
+      <input type="text" id="f_whatsapp" dir="ltr" inputmode="tel" placeholder="05xxxxxxxx">
+      <label for="f_address">العنوان</label>
+      <input type="text" id="f_address">
+      <label for="f_mapsUrl">رابط الموقع على خرائط جوجل</label>
+      <input type="url" id="f_mapsUrl" dir="ltr">
+    </section>
+
+    <section class="card">
+      <h2>التوصيل</h2>
+      <label for="f_areas">الأحياء اللي نوصل لها</label>
+      <p class="hint">كل حي في سطر.</p>
+      <textarea id="f_areas"></textarea>
+      <div class="row">
+        <div>
+          <label for="f_freeDeliveryMin">مجاني إذا الطلب من (ريال)</label>
+          <input type="number" id="f_freeDeliveryMin" min="0" step="0.01" inputmode="decimal">
+        </div>
+        <div>
+          <label for="f_deliveryFee">رسوم التوصيل (ريال)</label>
+          <input type="number" id="f_deliveryFee" min="0" step="0.01" inputmode="decimal">
+        </div>
+      </div>
+      <p class="hint" style="margin-top:8px">إذا حطيت الرسوم 0، يصير التوصيل مجاني دايماً. وإذا حطيت حد المجاني 0، الرسوم تنطبق على كل الطلبات.</p>
+    </section>
+
+    <section class="card">
+      <h2>طرق الدفع</h2>
+      <p class="hint">كل طريقة في سطر.</p>
+      <textarea id="f_payments"></textarea>
+    </section>
+
+    <section class="card">
+      <h2>الأصناف السريعة</h2>
+      <p class="hint">الأزرار اللي تحت مربع الطلب. كل صنف في سطر.</p>
+      <textarea id="f_quickItems" style="min-height:180px"></textarea>
+    </section>
+
+    <section class="card">
+      <h2>أوقات الدوام</h2>
+      <div class="row" style="margin-bottom:8px">
+        <button type="button" class="btn light small" id="all24">كل الأيام 24 ساعة</button>
+        <button type="button" class="btn light small" id="copySat">انسخ السبت لكل الأيام</button>
+      </div>
+      <div id="hoursBox"></div>
+    </section>
+
+    <section class="card">
+      <h2>العروض</h2>
+      <label class="switch"><input type="checkbox" id="f_offersEnabled"> إظهار العروض في الموقع</label>
+      <p class="hint">إذا طفّيتها أو ما فيه عروض، يظهر «عروض الأسبوع قريباً».</p>
+      <div id="offersBox"></div>
+      <button type="button" class="btn light" id="addOffer" style="width:100%">+ إضافة عرض</button>
+    </section>
+
+    <section class="card">
+      <h2>صور «تعرّف علينا»</h2>
+      <p class="hint">الصورة ترتفع مباشرة لما تختارها، وبعدها اضغط «حفظ التعديلات» تحت.</p>
+      <div class="photos" id="photosBox"></div>
+    </section>
+  </div>
+</div>
+
+<div class="savebar hidden" id="savebar">
+  <div class="inner">
+    <button class="btn" id="saveBtn" type="button">💾 حفظ التعديلات</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var REPO = "ibtisamat-alshatee/ibtisamat-alshatee.github.io";
+  var BRANCH = "main";
+  var API = "https://api.github.com/repos/" + REPO;
+  var TOKEN_KEY = "ibtisama_admin_token";
+  var DAYS = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+  var ORDER = [6,0,1,2,3,4,5];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var token = "", data = null, sha = null, dirty = false;
+
+  /* ===== أدوات ===== */
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function msg(text, type){
+    var m = $("msg");
+    m.textContent = text;
+    m.className = text ? type : "";
+    if (text) window.scrollTo({top: 0, behavior: "smooth"});
+  }
+  function b64encode(str){ return btoa(unescape(encodeURIComponent(str))); }
+  function b64decode(b64){ return decodeURIComponent(escape(atob(b64.replace(/\s/g, "")))); }
+  function lines(v){ return v.split(/\r?\n/).map(function(s){ return s.trim(); }).filter(Boolean); }
+  function getToken(){ try { return localStorage.getItem(TOKEN_KEY) || ""; } catch (e) { return ""; } }
+  function setToken(t){ try { t ? localStorage.setItem(TOKEN_KEY, t) : localStorage.removeItem(TOKEN_KEY); } catch (e) {} }
+
+  function gh(path, opts){
+    opts = opts || {};
+    return fetch(API + path, {
+      method: opts.method || "GET",
+      headers: {
+        "Authorization": "Bearer " + token,
+        "Accept": "application/vnd.github+json",
+        "Content-Type": "application/json"
+      },
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+      cache: "no-store"
+    }).then(function(r){
+      return r.text().then(function(t){
+        var j = null; try { j = t ? JSON.parse(t) : null; } catch (e) {}
+        if (!r.ok) { var err = new Error((j && j.message) || ("HTTP " + r.status)); err.status = r.status; throw err; }
+        return j;
+      });
+    });
+  }
+
+  function friendlyError(e){
+    if (!navigator.onLine) return "ما فيه اتصال بالإنترنت.";
+    if (e.status === 401) return "المفتاح غير صحيح أو انتهت صلاحيته. اطلع واطلب مفتاح جديد.";
+    if (e.status === 403 || e.status === 404) return "المفتاح ما عنده صلاحية على الموقع. تأكد إنك علّمت على public_repo وإن حسابك مالك المنظمة.";
+    if (e.status === 409) return "صار تعديل ثاني بنفس الوقت. حدّث الصفحة وحاول مرة ثانية.";
+    return "صار خطأ: " + e.message;
+  }
+
+  /* ===== الدخول ===== */
+  function showLogin(){
+    $("login").classList.remove("hidden");
+    $("editor").classList.add("hidden");
+    $("savebar").classList.add("hidden");
+    $("logoutBtn").classList.add("hidden");
+  }
+
+  function start(){
+    msg("جاري التحميل...", "info");
+    gh("").then(function(repo){
+      if (!repo.permissions || !repo.permissions.push) {
+        var e = new Error("no push"); e.status = 403; throw e;
+      }
+      return loadData();
+    }).then(function(){
+      $("login").classList.add("hidden");
+      $("editor").classList.remove("hidden");
+      $("savebar").classList.remove("hidden");
+      $("logoutBtn").classList.remove("hidden");
+      msg("", "");
+    }).catch(function(e){
+      if (e.status === 401 || e.status === 403 || e.status === 404) { setToken(""); token = ""; }
+      showLogin();
+      msg(friendlyError(e), "err");
+    });
+  }
+
+  function loadData(){
+    return gh("/contents/data.json?ref=" + BRANCH).then(function(f){
+      sha = f.sha;
+      data = JSON.parse(b64decode(f.content));
+      fill();
+    });
+  }
+
+  $("loginBtn").addEventListener("click", function(){
+    var t = $("tokenInput").value.trim();
+    if (!t) { msg("الصق المفتاح أول.", "err"); $("tokenInput").focus(); return; }
+    token = t; setToken(t); start();
+  });
+  $("logoutBtn").addEventListener("click", function(){
+    if (dirty && !confirm("عندك تعديلات ما حفظتها. تبي تطلع؟")) return;
+    setToken(""); token = ""; dirty = false; $("tokenInput").value = ""; showLogin(); msg("طلعت من لوحة التحكم.", "info");
+  });
+
+  /* ===== تعبئة النموذج ===== */
+  var simple = ["announcement","storeName","tagline","heroTitle","heroText","address","mapsUrl"];
+  var lists = ["areas","payments","quickItems"];
+
+  function fill(){
+    simple.forEach(function(k){ $("f_" + k).value = data[k] || ""; });
+    lists.forEach(function(k){ $("f_" + k).value = (data[k] || []).join("\n"); });
+    var wa = String(data.whatsapp || "");
+    $("f_whatsapp").value = wa.indexOf("966") === 0 ? "0" + wa.slice(3) : wa;
+    $("f_freeDeliveryMin").value = data.freeDeliveryMin != null ? data.freeDeliveryMin : "";
+    $("f_deliveryFee").value = data.deliveryFee != null ? data.deliveryFee : "";
+    $("f_offersEnabled").checked = !!(data.offers && data.offers.enabled);
+    data.hours = data.hours || [];
+    for (var i = 0; i < 7; i++) data.hours[i] = data.hours[i] || {mode: "24"};
+    data.offers = data.offers || {enabled: false, items: []};
+    data.offers.items = data.offers.items || [];
+    data.photos = data.photos || [];
+    renderHours(); renderOffers(); renderPhotos();
+    dirty = false;
+  }
+
+  /* الدوام */
+  function renderHours(){
+    $("hoursBox").innerHTML = ORDER.map(function(d){
+      var h = data.hours[d];
+      return '<div class="day" data-d="' + d + '"><b>' + DAYS[d] + '</b>' +
+        '<select data-k="mode" aria-label="دوام ' + DAYS[d] + '">' +
+          '<option value="24"' + (h.mode === "24" ? " selected" : "") + '>24 ساعة</option>' +
+          '<option value="open"' + (h.mode === "open" ? " selected" : "") + '>أوقات محددة</option>' +
+          '<option value="closed"' + (h.mode === "closed" ? " selected" : "") + '>مغلق</option>' +
+        '</select>' +
+        '<div class="times' + (h.mode === "open" ? " show" : "") + '">' +
+          '<span>الفترة الأولى (من - إلى)</span>' +
+          '<input type="time" data-k="from" value="' + esc(h.from || "") + '" aria-label="من">' +
+          '<input type="time" data-k="to" value="' + esc(h.to || "") + '" aria-label="إلى">' +
+          '<span>فترة ثانية (اختياري، مثلاً بعد العصر)</span>' +
+          '<input type="time" data-k="from2" value="' + esc(h.from2 || "") + '" aria-label="من">' +
+          '<input type="time" data-k="to2" value="' + esc(h.to2 || "") + '" aria-label="إلى">' +
+        '</div></div>';
+    }).join("");
+  }
+  $("hoursBox").addEventListener("change", function(e){
+    var row = e.target.closest(".day"); if (!row) return;
+    var d = +row.getAttribute("data-d"), k = e.target.getAttribute("data-k");
+    data.hours[d][k] = e.target.value;
+    if (k === "mode") row.querySelector(".times").classList.toggle("show", e.target.value === "open");
+    dirty = true;
+  });
+  $("all24").addEventListener("click", function(){
+    for (var i = 0; i < 7; i++) data.hours[i] = {mode: "24"};
+    renderHours(); dirty = true;
+  });
+  $("copySat").addEventListener("click", function(){
+    var s = JSON.stringify(data.hours[6]);
+    for (var i = 0; i < 7; i++) data.hours[i] = JSON.parse(s);
+    renderHours(); dirty = true;
+  });
+
+  /* العروض */
+  function renderOffers(){
+    var items = data.offers.items;
+    $("offersBox").innerHTML = items.length ? items.map(function(o, i){
+      return '<div class="offer" data-i="' + i + '">' +
+        '<label>اسم العرض</label><input type="text" data-k="title" value="' + esc(o.title) + '" placeholder="مثلاً: رز بسمتي 10 كيلو">' +
+        '<label>السعر</label><input type="text" data-k="price" value="' + esc(o.price) + '" placeholder="مثلاً: 45 ريال بدل 55">' +
+        '<label>ملاحظة (اختياري)</label><input type="text" data-k="note" value="' + esc(o.note) + '" placeholder="مثلاً: لين نهاية الأسبوع">' +
+        '<button type="button" class="btn danger small" data-del="' + i + '" style="margin-top:10px">حذف العرض</button></div>';
+    }).join("") : '<p class="hint">ما فيه عروض حالياً.</p>';
+  }
+  $("offersBox").addEventListener("input", function(e){
+    var box = e.target.closest(".offer"); if (!box) return;
+    data.offers.items[+box.getAttribute("data-i")][e.target.getAttribute("data-k")] = e.target.value;
+    dirty = true;
+  });
+  $("offersBox").addEventListener("click", function(e){
+    var i = e.target.getAttribute("data-del"); if (i == null) return;
+    data.offers.items.splice(+i, 1); renderOffers(); dirty = true;
+  });
+  $("addOffer").addEventListener("click", function(){
+    data.offers.items.push({title: "", price: "", note: ""});
+    $("f_offersEnabled").checked = true;
+    renderOffers(); dirty = true;
+    var inputs = $("offersBox").querySelectorAll(".offer:last-child input");
+    if (inputs[0]) inputs[0].focus();
+  });
+
+  /* الصور */
+  function photoUrl(src){
+    if (!src) return "";
+    if (/^https?:\/\//.test(src)) return src;
+    return "https://raw.githubusercontent.com/" + REPO + "/" + BRANCH + "/" + src;
+  }
+  function renderPhotos(){
+    $("photosBox").innerHTML = data.photos.map(function(p, i){
+      return '<div class="photo" data-i="' + i + '">' +
+        (p.src ? '<img src="' + esc(photoUrl(p.src)) + '" alt="">' : '<div class="empty">[' + esc(p.label) + ']</div>') +
+        '<label>اسم الصورة</label><input type="text" data-k="label" value="' + esc(p.label) + '">' +
+        '<div class="photo-actions" style="margin-top:10px">' +
+          '<span class="btn light small file-btn">📷 ' + (p.src ? "تغيير الصورة" : "اختيار صورة") +
+            '<input type="file" accept="image/*" aria-label="اختيار صورة"></span>' +
+          (p.src ? '<button type="button" class="btn danger small" data-rm="' + i + '">حذف</button>' : "") +
+        '</div></div>';
+    }).join("");
+  }
+  $("photosBox").addEventListener("input", function(e){
+    if (e.target.getAttribute("data-k") !== "label") return;
+    data.photos[+e.target.closest(".photo").getAttribute("data-i")].label = e.target.value;
+    dirty = true;
+  });
+  $("photosBox").addEventListener("click", function(e){
+    var i = e.target.getAttribute("data-rm"); if (i == null) return;
+    data.photos[+i].src = ""; renderPhotos(); dirty = true;
+  });
+  $("photosBox").addEventListener("change", function(e){
+    if (e.target.type !== "file" || !e.target.files[0]) return;
+    var i = +e.target.closest(".photo").getAttribute("data-i");
+    msg("جاري رفع الصورة...", "info");
+    resizeImage(e.target.files[0], 1400, 0.82).then(function(b64){
+      var path = "images/photo-" + (i + 1) + "-" + Date.now() + ".jpg";
+      return gh("/contents/" + path, {method: "PUT", body: {message: "رفع صورة من لوحة التحكم", content: b64, branch: BRANCH}})
+        .then(function(){ return path; });
+    }).then(function(path){
+      data.photos[i].src = path; dirty = true; renderPhotos();
+      msg("تم رفع الصورة ✅ لا تنسى تضغط «حفظ التعديلات» تحت.", "ok");
+    }).catch(function(err){ msg(err.status ? friendlyError(err) : "ما قدرنا نقرأ الصورة. جرّب صورة ثانية.", "err"); });
+  });
+
+  function resizeImage(file, max, quality){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function(){
+        var s = Math.min(1, max / Math.max(img.width, img.height));
+        var c = document.createElement("canvas");
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        var ctx = c.getContext("2d");
+        ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        resolve(c.toDataURL("image/jpeg", quality).split(",")[1]);
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error("bad image")); };
+      img.src = url;
+    });
+  }
+
+  /* ===== الحفظ ===== */
+  document.addEventListener("input", function(e){ if (e.target.id && e.target.id.indexOf("f_") === 0) dirty = true; });
+  document.addEventListener("change", function(e){ if (e.target.id && e.target.id.indexOf("f_") === 0) dirty = true; });
+  window.addEventListener("beforeunload", function(e){ if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+
+  function collect(){
+    var out = JSON.parse(JSON.stringify(data));
+    simple.forEach(function(k){ out[k] = $("f_" + k).value.trim(); });
+    lists.forEach(function(k){ out[k] = lines($("f_" + k).value); });
+    var wa = $("f_whatsapp").value.replace(/\D/g, "");
+    if (wa.indexOf("05") === 0) wa = "966" + wa.slice(1);
+    else if (wa.indexOf("5") === 0 && wa.length === 9) wa = "966" + wa;
+    out.whatsapp = wa;
+    out.freeDeliveryMin = Math.max(0, parseFloat($("f_freeDeliveryMin").value) || 0);
+    out.deliveryFee = Math.max(0, parseFloat($("f_deliveryFee").value) || 0);
+    out.offers.enabled = $("f_offersEnabled").checked;
+    out.offers.items = out.offers.items.filter(function(o){ return (o.title || "").trim(); })
+      .map(function(o){ return {title: o.title.trim(), price: (o.price || "").trim(), note: (o.note || "").trim()}; });
+    out.hours = out.hours.map(function(h){
+      if (h.mode !== "open") return {mode: h.mode};
+      var r = {mode: "open", from: h.from || "", to: h.to || ""};
+      if (h.from2 && h.to2) { r.from2 = h.from2; r.to2 = h.to2; }
+      return r;
+    });
+    return out;
+  }
+
+  function check(d){
+    if (!d.storeName) return "اكتب اسم البقالة.";
+    if (!/^9665\d{8}$/.test(d.whatsapp)) return "رقم الواتساب لازم يكون رقم جوال سعودي، مثل 0505791265.";
+    if (!d.areas.length) return "لازم يكون فيه حي واحد على الأقل.";
+    if (d.mapsUrl && !/^https?:\/\//.test(d.mapsUrl)) return "رابط الخرائط لازم يبدأ بـ https://";
+    for (var i = 0; i < 7; i++) {
+      var h = d.hours[i];
+      if (h.mode === "open" && (!h.from || !h.to)) return "حدد وقت الفتح والإغلاق ليوم " + DAYS[i] + "، أو اختر 24 ساعة أو مغلق.";
+    }
+    return "";
+  }
+
+  function save(retry){
+    var out = collect(), problem = check(out);
+    if (problem) { msg(problem, "err"); return; }
+    var btn = $("saveBtn"); btn.disabled = true; btn.textContent = "جاري الحفظ...";
+    return gh("/contents/data.json", {method: "PUT", body: {
+      message: "تحديث محتوى الموقع من لوحة التحكم",
+      content: b64encode(JSON.stringify(out, null, 2) + "\n"),
+      sha: sha, branch: BRANCH
+    }}).then(function(res){
+      sha = res.content.sha; data = out; dirty = false;
+      msg("تم الحفظ ✅ التعديلات تظهر في الموقع خلال دقيقة إلى دقيقتين.", "ok");
+    }).catch(function(e){
+      if ((e.status === 409 || e.status === 422) && !retry) {
+        return gh("/contents/data.json?ref=" + BRANCH).then(function(f){ sha = f.sha; return save(true); });
+      }
+      msg(friendlyError(e), "err");
+    }).then(function(){ if (!retry) { btn.disabled = false; btn.textContent = "💾 حفظ التعديلات"; } });
+  }
+  $("saveBtn").addEventListener("click", function(){ save(false); });
+
+  /* ===== البداية ===== */
+  token = getToken();
+  if (token) start(); else showLogin();
+})();
+</script>
+</body>
+</html>

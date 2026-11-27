@@ -138,10 +138,22 @@
     .pay{grid-template-columns:1fr}
     .fee .amount{font-size:1.6rem}
   }
+  #announce{display:none;background:var(--sea-dark);color:var(--white);text-align:center;font-weight:700;padding:10px 16px;font-size:1rem}
+  #announce.show{display:block}
+  .fees.one{grid-template-columns:1fr}
+  .photo img{width:100%;height:100%;object-fit:cover;border-radius:12px;display:block}
+  .photo.has-img{border-style:solid;padding:0;overflow:hidden}
+  .photo.has-img img{border-radius:0}
+  .offers{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+  .offer{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 16px;text-align:center;border-top:6px solid var(--sun)}
+  .offer h3{font-size:1.2rem;font-weight:800;color:var(--sea-dark)}
+  .offer .price{font-size:1.6rem;font-weight:800;color:var(--sun-dark)}
+  .offer p{color:var(--muted);font-size:.95rem}
 </style>
 </head>
 <body>
 
+<div id="announce" role="status"></div>
 <div id="closedBar" role="status">المحل مغلق الآن، اطلب وبنجهز طلبك أول ما نفتح</div>
 
 <!-- 1. الواجهة الرئيسية -->
@@ -156,21 +168,16 @@
         </svg>
       </div>
       <div>
-        <div class="brand-name">ابتسامة الشاطئ</div>
-        <div class="brand-tag">بقالة حيّك في صبيا</div>
+        <div class="brand-name js-name"></div>
+        <div class="brand-tag js-tagline"></div>
       </div>
     </div>
-    <h1>اكتب طلبك، ونوصله لباب بيتك</h1>
-    <p class="lead">بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة</p>
+    <h1 id="heroTitle"></h1>
+    <p class="lead" id="heroText"></p>
     <a href="#order" class="btn btn-sun">اطلب الآن
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </a>
-    <div class="badges">
-      <span class="badge">🚚 توصيل مجاني فوق 50 ريال</span>
-      <span class="badge">📍 الحشيبرية والجمالة</span>
-      <span class="badge">💳 تحويل · شبكة · كاش</span>
-      <span class="badge">🕒 <span id="badgeHours">مفتوحين 24 ساعة</span></span>
-    </div>
+    <div class="badges" id="badges"></div>
   </div>
   <svg class="wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30c120-20 240-20 360 0s240 20 360 0 240-20 360 0 240 20 360 0v30H0z" fill="#f6eddc"/></svg>
 </header>
@@ -180,16 +187,7 @@
   <div class="wrap">
     <h2>رسوم التوصيل</h2>
     <p class="sub">واضحة وبدون مفاجآت</p>
-    <div class="fees">
-      <div class="fee free">
-        <div class="amount">مجاناً</div>
-        <div class="cond">إذا طلبك 50 ريال أو أكثر</div>
-      </div>
-      <div class="fee">
-        <div class="amount">5.75 ر.س</div>
-        <div class="cond">إذا طلبك أقل من 50 ريال</div>
-      </div>
-    </div>
+    <div class="fees" id="feeCards"></div>
   </div>
 </section>
 
@@ -206,11 +204,7 @@
 
       <div class="field">
         <label class="lbl" for="area">الحي <span class="req">*</span></label>
-        <select id="area" aria-describedby="areaErr">
-          <option value="">اختر حيّك</option>
-          <option value="الحشيبرية">الحشيبرية</option>
-          <option value="الجمالة">الجمالة</option>
-        </select>
+        <select id="area" aria-describedby="areaErr"></select>
         <div class="err" id="areaErr">لو سمحت اختر الحي عشان نعرف وين نوصل</div>
       </div>
 
@@ -223,28 +217,13 @@
         <label class="lbl" for="items">وش تحتاج؟ <span class="req">*</span></label>
         <textarea id="items" aria-describedby="itemsErr" placeholder="اكتب كل صنف في سطر، مثلاً:&#10;كيس رز 5 كيلو&#10;2 حليب طويل الأجل&#10;كرتون بيض"></textarea>
         <div class="err" id="itemsErr">اكتب طلبك هنا، ولو صنف واحد</div>
-        <div class="chips" id="chips" aria-label="أصناف سريعة">
-          <button type="button" class="chip">رز</button>
-          <button type="button" class="chip">دجاج</button>
-          <button type="button" class="chip">زيت</button>
-          <button type="button" class="chip">سكر</button>
-          <button type="button" class="chip">حليب</button>
-          <button type="button" class="chip">بيض</button>
-          <button type="button" class="chip">خبز</button>
-          <button type="button" class="chip">ماء</button>
-          <button type="button" class="chip">شاي</button>
-          <button type="button" class="chip">مناديل</button>
-        </div>
+        <div class="chips" id="chips" aria-label="أصناف سريعة"></div>
         <p class="chips-hint">اضغط على أي صنف يضاف لطلبك، وتقدر تكتب جنبه الكمية أو النوع</p>
       </div>
 
-      <div class="field">
+      <div class="field" id="payField">
         <span class="lbl" id="payLbl">طريقة الدفع</span>
-        <div class="pay" role="group" aria-labelledby="payLbl" id="pay">
-          <button type="button" aria-pressed="false" data-v="تحويل بنكي">تحويل بنكي</button>
-          <button type="button" aria-pressed="false" data-v="شبكة عند الاستلام">شبكة عند الاستلام</button>
-          <button type="button" aria-pressed="false" data-v="كاش عند الاستلام">كاش عند الاستلام</button>
-        </div>
+        <div class="pay" role="group" aria-labelledby="payLbl" id="pay"></div>
       </div>
 
       <div class="field">
@@ -267,20 +246,11 @@
 <section class="sand" id="areas">
   <div class="wrap">
     <h2>المناطق اللي نوصل لها</h2>
-    <p class="sub">نوصل حالياً لهذي الأحياء في صبيا</p>
-    <div class="areas">
-      <div class="area">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="#0b6e79"/><circle cx="12" cy="10" r="2.6" fill="#f6eddc"/></svg>
-        الحشيبرية
-      </div>
-      <div class="area">
-        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="#0b6e79"/><circle cx="12" cy="10" r="2.6" fill="#f6eddc"/></svg>
-        الجمالة
-      </div>
-    </div>
-    <p class="center muted" style="margin-bottom:18px">حيّك مو موجود؟ <a class="wa-link" href="https://wa.me/966505791265?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D9%87%D9%84%20%D8%AA%D9%88%D8%B5%D9%84%D9%88%D9%86%20%D9%84%D8%AD%D9%8A%D9%91%D9%8A%D8%9F" rel="noopener">راسلنا على الواتساب</a> ونشوف إذا نقدر نوصل لك</p>
+    <p class="sub" id="areasSub"></p>
+    <div class="areas" id="areaCards"></div>
+    <p class="center muted" style="margin-bottom:18px">حيّك مو موجود؟ <a class="wa-link" id="askArea" href="#" rel="noopener">راسلنا على الواتساب</a> ونشوف إذا نقدر نوصل لك</p>
     <div class="center">
-      <a class="btn btn-outline" href="https://maps.app.goo.gl/xUge2H9bAkNqRFKF7" target="_blank" rel="noopener">
+      <a class="btn btn-outline js-map" href="#" target="_blank" rel="noopener">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="10" r="2.6" stroke="currentColor" stroke-width="2.2"/></svg>
         موقع البقالة على خرائط جوجل
       </a>
@@ -295,16 +265,14 @@
     <p class="sub">مرّنا أو اطلب من مكانك</p>
     <div class="hours-grid">
       <div class="card">
-        <table id="hoursTable" aria-label="أوقات الدوام">
-          <tbody></tbody>
-        </table>
+        <table id="hoursTable" aria-label="أوقات الدوام"><tbody></tbody></table>
       </div>
       <div class="card addr">
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="flex-shrink:0;margin-top:4px"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="#f2a541"/><circle cx="12" cy="10" r="2.6" fill="#fff"/></svg>
         <div>
           <div class="lbl">العنوان</div>
-          <p>بقالة ابتسامة الشاطئ، حي الحشيبرية، صبيا</p>
-          <p style="margin-top:10px"><a class="wa-link" href="https://maps.app.goo.gl/xUge2H9bAkNqRFKF7" target="_blank" rel="noopener" style="color:var(--sea)">افتح الموقع على الخريطة ←</a></p>
+          <p class="js-address"></p>
+          <p style="margin-top:10px"><a class="wa-link js-map" href="#" target="_blank" rel="noopener" style="color:var(--sea)">افتح الموقع على الخريطة ←</a></p>
         </div>
       </div>
     </div>
@@ -315,11 +283,7 @@
 <section class="sand" id="offers">
   <div class="wrap">
     <h2>العروض</h2>
-    <div class="soon">
-      <div style="font-size:2.4rem" aria-hidden="true">🏷️</div>
-      <strong>عروض الأسبوع قريباً</strong>
-      <p class="muted">ترقبونا، بننزل عروض حلوة على أغراض البيت</p>
-    </div>
+    <div id="offersBox"></div>
   </div>
 </section>
 
@@ -339,26 +303,22 @@
       </div>
       <div class="point">
         <div class="ic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-9z" stroke="#0b6e79" stroke-width="2.2" stroke-linejoin="round"/></svg></div>
-        <div><h3>توصيل لباب البيت</h3><p>نجهز طلبك ونوصله لين عندك في الحشيبرية والجمالة</p></div>
+        <div><h3>توصيل لباب البيت</h3><p id="aboutDelivery"></p></div>
       </div>
     </div>
-    <div class="photos">
-      <div class="photo">[صورة واجهة المحل]</div>
-      <div class="photo">[صورة من داخل المحل]</div>
-      <div class="photo">[صورة طلب مجهّز]</div>
-    </div>
+    <div class="photos" id="photos"></div>
   </div>
 </section>
 
 <!-- 8. التذييل -->
 <footer>
   <div class="wrap">
-    <div class="fname">ابتسامة الشاطئ</div>
-    <p>بقالة حيّك في صبيا</p>
-    <a class="phone" href="https://wa.me/966505791265" rel="noopener">0505791265</a>
+    <div class="fname js-name"></div>
+    <p class="js-tagline"></p>
+    <a class="phone" id="footerPhone" href="#" rel="noopener"></a>
     <p>واتساب الطلبات</p>
-    <p style="margin-top:10px">حي الحشيبرية، صبيا</p>
-    <p style="margin-top:10px"><a class="maplink" href="https://maps.app.goo.gl/xUge2H9bAkNqRFKF7" target="_blank" rel="noopener">موقعنا على الخريطة</a></p>
+    <p style="margin-top:10px" class="js-address"></p>
+    <p style="margin-top:10px"><a class="maplink js-map" href="#" target="_blank" rel="noopener">موقعنا على الخريطة</a></p>
   </div>
 </footer>
 
@@ -366,99 +326,194 @@
 (function(){
   "use strict";
 
-  var STORE_NAME = "ابتسامة الشاطئ";
-  var WA_NUMBER = "966505791265";
-
-  /* ===== أوقات الدوام =====
-     لم تُستخرج من الخرائط بعد. عبّها هنا بصيغة 24 ساعة، مثال:
-     0: [["07:00","13:00"],["16:00","24:00"]]   (الأحد، فترتين)
-     يوم مغلق: []
-     0=الأحد 1=الاثنين 2=الثلاثاء 3=الأربعاء 4=الخميس 5=الجمعة 6=السبت
-     طول ما HOURS = null، الجدول يعرض نص "تُعبأ لاحقاً" وشريط "المحل مغلق" ما يظهر. */
-  var FULL = [["00:00","24:00"]];
-  var HOURS = {0:FULL,1:FULL,2:FULL,3:FULL,4:FULL,5:FULL,6:FULL}; // مفتوح 24 ساعة كل الأيام
+  /* البيانات الافتراضية. المحتوى الفعلي يُقرأ من data.json (يتعدّل من لوحة التحكم admin.html) */
+  var DEFAULTS = {"storeName": "ابتسامة الشاطئ", "tagline": "بقالة حيّك في صبيا", "heroTitle": "اكتب طلبك، ونوصله لباب بيتك", "heroText": "بدون تطبيق وبدون تسجيل، اكتب أغراضك كأنك تكلمنا، والطلب يوصلنا على الواتساب مباشرة", "announcement": "", "whatsapp": "966505791265", "address": "حي الحشيبرية، صبيا", "mapsUrl": "https://maps.app.goo.gl/xUge2H9bAkNqRFKF7", "areas": ["الحشيبرية", "الجمالة"], "freeDeliveryMin": 50, "deliveryFee": 5.75, "payments": ["تحويل بنكي", "شبكة عند الاستلام", "كاش عند الاستلام"], "quickItems": ["رز", "دجاج", "زيت", "سكر", "حليب", "بيض", "خبز", "ماء", "شاي", "مناديل"], "hours": [{"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}, {"mode": "24"}], "offers": {"enabled": false, "items": []}, "photos": [{"src": "", "label": "صورة واجهة المحل"}, {"src": "", "label": "صورة من داخل المحل"}, {"src": "", "label": "صورة طلب مجهّز"}]};
+  var D = DEFAULTS;
 
   var DAYS = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
-  var ORDER = [6,0,1,2,3,4,5]; // يبدأ الجدول من السبت
+  var ORDER = [6,0,1,2,3,4,5];
+  var $ = function(id){ return document.getElementById(id); };
+  var all = function(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); };
 
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function money(n){ return String(Math.round(Number(n) * 100) / 100); }
+  function joinAnd(list){
+    if (list.length <= 1) return list.join("");
+    return list.slice(0, -1).join("، ") + " و" + list[list.length - 1];
+  }
+  function waNumber(){ return String(D.whatsapp || "").replace(/\D/g, ""); }
+  function localPhone(){ var n = waNumber(); return n.indexOf("966") === 0 ? "0" + n.slice(3) : n; }
+  function safeUrl(u){ return /^https?:\/\//i.test(u || "") ? u : "#"; }
+  function safeSrc(u){ return /^(https?:\/\/|images\/)/i.test(u || "") ? u : ""; }
+
+  /* ===== أوقات الدوام ===== */
+  function ranges(day){
+    var h = (D.hours || [])[day] || {mode: "closed"};
+    if (h.mode === "24") return [["00:00","24:00"]];
+    if (h.mode !== "open") return [];
+    var r = [];
+    if (h.from && h.to) r.push([h.from, h.to]);
+    if (h.from2 && h.to2) r.push([h.from2, h.to2]);
+    return r;
+  }
   function isFull(r){ return r[0] === "00:00" && r[1] === "24:00"; }
-  function fmtRange(r){ return isFull(r) ? "24 ساعة" : fmt(r[0]) + " - " + fmt(r[1]); }
   function fmt(t){
     var p = t.split(":"), h = +p[0], m = p[1];
     if (h === 24 || h === 0) return "12:" + m + " منتصف الليل";
-    var suf = h < 12 ? "ص" : "م";
-    var h12 = h % 12 || 12;
-    return h12 + ":" + m + " " + suf;
+    return (h % 12 || 12) + ":" + m + " " + (h < 12 ? "ص" : "م");
   }
-  function toMin(t){ var p = t.split(":"); return (+p[0])*60 + (+p[1]); }
-
-  // يحسب الوقت بتوقيت السعودية بغض النظر عن توقيت الجهاز
+  function fmtRange(r){ return isFull(r) ? "24 ساعة" : fmt(r[0]) + " - " + fmt(r[1]); }
+  function toMin(t){ var p = t.split(":"); return (+p[0]) * 60 + (+p[1]); }
   function nowKSA(){
     var d = new Date();
-    var utc = d.getTime() + d.getTimezoneOffset()*60000;
-    return new Date(utc + 3*3600000);
+    return new Date(d.getTime() + d.getTimezoneOffset() * 60000 + 3 * 3600000);
   }
-
   function isOpen(){
-    var n = nowKSA(), day = n.getDay(), mins = n.getHours()*60 + n.getMinutes();
-    var today = HOURS[day] || [];
-    for (var i=0;i<today.length;i++){
-      var s = toMin(today[i][0]), e = toMin(today[i][1]);
-      if (e <= s) { if (mins >= s) return true; } // فترة تتجاوز منتصف الليل
-      else if (mins >= s && mins < e) return true;
-    }
-    var prev = HOURS[(day+6)%7] || [];
-    for (var j=0;j<prev.length;j++){
-      var s2 = toMin(prev[j][0]), e2 = toMin(prev[j][1]);
-      if (e2 <= s2 && mins < e2) return true;
-    }
-    return false;
+    var n = nowKSA(), day = n.getDay(), mins = n.getHours() * 60 + n.getMinutes();
+    var ok = ranges(day).some(function(r){
+      var s = toMin(r[0]), e = toMin(r[1]);
+      return e <= s ? mins >= s : (mins >= s && mins < e);
+    });
+    if (ok) return true;
+    return ranges((day + 6) % 7).some(function(r){
+      var s = toMin(r[0]), e = toMin(r[1]);
+      return e <= s && mins < e;
+    });
+  }
+  function always24(){
+    return [0,1,2,3,4,5,6].every(function(d){ var r = ranges(d); return r.length === 1 && isFull(r[0]); });
+  }
+  function hoursBadge(){
+    if (always24()) return "مفتوحين 24 ساعة";
+    var r = ranges(nowKSA().getDay());
+    return r.length ? "اليوم: " + r.map(fmtRange).join(" و ") : "اليوم: مغلق";
   }
 
-  function renderHours(){
-    var tbody = document.querySelector("#hoursTable tbody");
-    var todayIdx = nowKSA().getDay();
-    var html = "";
-    ORDER.forEach(function(d){
-      var val;
-      if (!HOURS) val = '<span class="ph">[أوقات الدوام - تُعبأ لاحقاً]</span>';
-      else if (!HOURS[d] || !HOURS[d].length) val = "مغلق";
-      else val = HOURS[d].map(fmtRange).join("<br>");
-      html += '<tr' + (d === todayIdx ? ' class="today"' : '') + '><td>' + DAYS[d] + (d === todayIdx ? ' (اليوم)' : '') + '</td><td>' + val + '</td></tr>';
-    });
-    tbody.innerHTML = html;
+  /* ===== عرض المحتوى ===== */
+  function render(){
+    var name = D.storeName || "";
+    var areas = (D.areas || []).filter(Boolean);
+    var pays = (D.payments || []).filter(Boolean);
+    var min = Number(D.freeDeliveryMin) || 0, fee = Number(D.deliveryFee) || 0;
 
-    if (HOURS){
-      var t = HOURS[todayIdx];
-      var allFull = [0,1,2,3,4,5,6].every(function(d){ return HOURS[d] && HOURS[d].length === 1 && isFull(HOURS[d][0]); });
-      document.getElementById("badgeHours").textContent = allFull ? "مفتوحين 24 ساعة" :
-        (t && t.length) ? "اليوم: " + t.map(fmtRange).join(" و ") : "اليوم: مغلق";
-      if (!isOpen()) document.getElementById("closedBar").classList.add("show");
+    document.title = name + " | " + (D.tagline || "");
+    all(".js-name").forEach(function(el){ el.textContent = name; });
+    all(".js-tagline").forEach(function(el){ el.textContent = D.tagline || ""; });
+    all(".js-address").forEach(function(el){ el.textContent = D.address || ""; });
+    all(".js-map").forEach(function(el){ el.href = safeUrl(D.mapsUrl); });
+    $("heroTitle").textContent = D.heroTitle || "";
+    $("heroText").textContent = D.heroText || "";
+
+    var ann = $("announce");
+    ann.textContent = D.announcement || "";
+    ann.classList.toggle("show", !!(D.announcement || "").trim());
+
+    // الشارات
+    var badges = [];
+    if (fee === 0) badges.push("🚚 توصيل مجاني");
+    else if (min > 0) badges.push("🚚 توصيل مجاني فوق " + money(min) + " ريال");
+    if (areas.length) badges.push("📍 " + joinAnd(areas));
+    if (pays.length) badges.push("💳 " + pays.map(function(p){ return p.replace(/ عند الاستلام$/, ""); }).join(" · "));
+    badges.push("🕒 " + hoursBadge());
+    $("badges").innerHTML = badges.map(function(b){ return '<span class="badge">' + esc(b) + "</span>"; }).join("");
+
+    // رسوم التوصيل
+    var fc = $("feeCards");
+    if (fee === 0) {
+      fc.className = "fees one";
+      fc.innerHTML = '<div class="fee free"><div class="amount">مجاناً</div><div class="cond">التوصيل مجاني على كل الطلبات</div></div>';
+    } else if (min > 0) {
+      fc.className = "fees";
+      fc.innerHTML = '<div class="fee free"><div class="amount">مجاناً</div><div class="cond">إذا طلبك ' + esc(money(min)) + ' ريال أو أكثر</div></div>' +
+        '<div class="fee"><div class="amount">' + esc(money(fee)) + ' ر.س</div><div class="cond">إذا طلبك أقل من ' + esc(money(min)) + ' ريال</div></div>';
+    } else {
+      fc.className = "fees one";
+      fc.innerHTML = '<div class="fee"><div class="amount">' + esc(money(fee)) + ' ر.س</div><div class="cond">رسوم التوصيل لكل طلب</div></div>';
     }
+
+    // قائمة الأحياء
+    var sel = $("area"), cur = sel.value || savedArea;
+    sel.innerHTML = '<option value="">اختر حيّك</option>' +
+      areas.map(function(a){ return '<option value="' + esc(a) + '">' + esc(a) + "</option>"; }).join("");
+    if (areas.indexOf(cur) > -1) sel.value = cur;
+
+    // الأصناف السريعة
+    $("chips").innerHTML = (D.quickItems || []).filter(Boolean).map(function(q){
+      return '<button type="button" class="chip">' + esc(q) + "</button>";
+    }).join("");
+
+    // طرق الدفع
+    if (pays.indexOf(payment) === -1) payment = "";
+    $("payField").style.display = pays.length ? "" : "none";
+    $("pay").style.gridTemplateColumns = "repeat(" + Math.min(Math.max(pays.length, 1), 3) + ",1fr)";
+    $("pay").innerHTML = pays.map(function(p){
+      return '<button type="button" aria-pressed="' + (p === payment) + '" data-v="' + esc(p) + '">' + esc(p) + "</button>";
+    }).join("");
+
+    // المناطق
+    $("areasSub").textContent = "نوصل حالياً لهذي الأحياء";
+    var pin = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z" fill="#0b6e79"/><circle cx="12" cy="10" r="2.6" fill="#f6eddc"/></svg>';
+    $("areaCards").innerHTML = areas.map(function(a){ return '<div class="area">' + pin + esc(a) + "</div>"; }).join("");
+    $("askArea").href = "https://wa.me/" + waNumber() + "?text=" + encodeURIComponent("السلام عليكم، هل توصلون لحيّي؟");
+    $("aboutDelivery").textContent = "نجهز طلبك ونوصله لين عندك" + (areas.length ? " في " + joinAnd(areas) : "");
+
+    // الدوام
+    var todayIdx = nowKSA().getDay();
+    $("hoursTable").tBodies[0].innerHTML = ORDER.map(function(d){
+      var r = ranges(d);
+      var val = r.length ? r.map(function(x){ return esc(fmtRange(x)); }).join("<br>") : "مغلق";
+      return "<tr" + (d === todayIdx ? ' class="today"' : "") + "><td>" + DAYS[d] + (d === todayIdx ? " (اليوم)" : "") + "</td><td>" + val + "</td></tr>";
+    }).join("");
+    $("closedBar").classList.toggle("show", !isOpen());
+
+    // العروض
+    var offers = (D.offers && D.offers.enabled) ? (D.offers.items || []).filter(function(o){ return o && o.title; }) : [];
+    $("offersBox").innerHTML = offers.length
+      ? '<div class="offers">' + offers.map(function(o){
+          return '<div class="offer"><h3>' + esc(o.title) + "</h3>" +
+            (o.price ? '<div class="price">' + esc(o.price) + "</div>" : "") +
+            (o.note ? "<p>" + esc(o.note) + "</p>" : "") + "</div>";
+        }).join("") + "</div>"
+      : '<div class="soon"><div style="font-size:2.4rem" aria-hidden="true">🏷️</div><strong>عروض الأسبوع قريباً</strong><p class="muted">ترقبونا، بننزل عروض حلوة على أغراض البيت</p></div>';
+
+    // الصور
+    $("photos").innerHTML = (D.photos || []).map(function(p){
+      var src = safeSrc(p && p.src);
+      return src
+        ? '<div class="photo has-img"><img src="' + esc(src) + '" alt="' + esc(p.label || "") + '" loading="lazy"></div>'
+        : '<div class="photo">[' + esc((p && p.label) || "صورة") + "]</div>";
+    }).join("");
+
+    // التذييل
+    var fp = $("footerPhone");
+    fp.textContent = localPhone();
+    fp.href = "https://wa.me/" + waNumber();
+
+    update();
   }
 
   /* ===== النموذج ===== */
-  var $ = function(id){ return document.getElementById(id); };
   var nameEl = $("name"), areaEl = $("area"), addrEl = $("address"),
-      itemsEl = $("items"), notesEl = $("notes"), sendBtn = $("sendBtn"),
-      formErr = $("formError");
-  var payment = "";
-  var tried = false;
+      itemsEl = $("items"), notesEl = $("notes"), sendBtn = $("sendBtn"), formErr = $("formError");
+  var payment = "", tried = false, savedArea = "";
 
-  // تعبئة البيانات المحفوظة
   try {
     var saved = JSON.parse(localStorage.getItem("ibtisama_customer") || "{}");
     if (saved.name) nameEl.value = saved.name;
     if (saved.address) addrEl.value = saved.address;
-    if (saved.area && [].some.call(areaEl.options, function(o){ return o.value === saved.area; })) areaEl.value = saved.area;
-  } catch(e) {}
+    savedArea = saved.area || "";
+  } catch (e) {}
 
   function saveCustomer(){
     try {
       localStorage.setItem("ibtisama_customer", JSON.stringify({
         name: nameEl.value.trim(), area: areaEl.value, address: addrEl.value.trim()
       }));
-    } catch(e) {}
+    } catch (e) {}
   }
 
   function getItems(){
@@ -468,7 +523,7 @@
   }
 
   function buildMessage(){
-    var lines = ["🛒 طلب جديد - " + STORE_NAME, ""];
+    var lines = ["🛒 طلب جديد - " + (D.storeName || ""), ""];
     var n = nameEl.value.trim(), a = areaEl.value, ad = addrEl.value.trim(), no = notesEl.value.trim();
     if (n) lines.push("الاسم: " + n);
     if (a) lines.push("الحي: " + a);
@@ -478,13 +533,13 @@
     var tail = [];
     if (payment) tail.push("الدفع: " + payment);
     if (no) tail.push("ملاحظات: " + no.replace(/\s*\r?\n\s*/g, " - "));
-    if (tail.length){ lines.push(""); lines = lines.concat(tail); }
+    if (tail.length) { lines.push(""); lines = lines.concat(tail); }
     lines.push("", "📍 بأرسل موقعي بعد هذه الرسالة.");
     return lines.join("\n");
   }
 
   function update(){
-    sendBtn.href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(buildMessage());
+    sendBtn.href = "https://wa.me/" + waNumber() + "?text=" + encodeURIComponent(buildMessage());
     if (tried) validate(false);
   }
 
@@ -501,13 +556,13 @@
     var msgs = [];
     if (areaBad) msgs.push("اختر الحي");
     if (itemsBad) msgs.push("اكتب طلبك");
-    if (msgs.length){
+    if (msgs.length) {
       formErr.textContent = "باقي شي بسيط قبل الإرسال: " + msgs.join(" و ");
       formErr.classList.add("show");
-      if (focus){
+      if (focus) {
         var target = areaBad ? areaEl : itemsEl;
-        target.scrollIntoView({behavior:"smooth", block:"center"});
-        setTimeout(function(){ target.focus({preventScroll:true}); }, 250);
+        target.scrollIntoView({behavior: "smooth", block: "center"});
+        setTimeout(function(){ target.focus({preventScroll: true}); }, 250);
       }
       return false;
     }
@@ -528,31 +583,36 @@
   });
   [nameEl, areaEl, addrEl].forEach(function(el){ el.addEventListener("change", saveCustomer); });
 
-  // الأصناف السريعة
   $("chips").addEventListener("click", function(e){
     var b = e.target.closest(".chip"); if (!b) return;
     var v = itemsEl.value.replace(/\s+$/, "");
     itemsEl.value = (v ? v + "\n" : "") + b.textContent.trim() + " ";
     itemsEl.focus();
     var len = itemsEl.value.length;
-    try { itemsEl.setSelectionRange(len, len); } catch(err) {}
+    try { itemsEl.setSelectionRange(len, len); } catch (err) {}
     update();
   });
 
-  // طريقة الدفع
-  var payBtns = document.querySelectorAll("#pay button");
-  [].forEach.call(payBtns, function(b){
-    b.addEventListener("click", function(){
-      var on = b.getAttribute("aria-pressed") !== "true";
-      [].forEach.call(payBtns, function(x){ x.setAttribute("aria-pressed", "false"); });
-      b.setAttribute("aria-pressed", on ? "true" : "false");
-      payment = on ? b.getAttribute("data-v") : "";
-      update();
-    });
+  $("pay").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if (!b) return;
+    var on = b.getAttribute("aria-pressed") !== "true";
+    all("#pay button").forEach(function(x){ x.setAttribute("aria-pressed", "false"); });
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    payment = on ? b.getAttribute("data-v") : "";
+    update();
   });
 
-  renderHours();
-  update();
+  render();
+
+  // تحميل آخر نسخة من البيانات
+  if (window.fetch) {
+    fetch("data.json?v=" + Date.now(), {cache: "no-store"})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(data){
+        if (data && JSON.stringify(data) !== JSON.stringify(D)) { D = data; render(); }
+      })
+      .catch(function(){});
+  }
 })();
 </script>
 </body>
